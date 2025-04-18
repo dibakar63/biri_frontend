@@ -58,7 +58,7 @@ const Market = () => {
   ];
   const fetchData=async()=>{
     try {
-      const response=await axios.get('http://localhost:5008/api/getMarket');
+      const response=await axios.get('https://apibiri.eazydevz.in/api/getMarket');
       setMarkets(response.data.market);
      
     } catch (error) {
@@ -77,7 +77,7 @@ const Market = () => {
     
     
     try {
-      const response=await axios.post('http://localhost:5008/api/marketRegister',{data:updateFormData});
+      const response=await axios.post('https://apibiri.eazydevz.in/api/marketRegister',{data:updateFormData});
       toast.success(response.data.message);
       fetchData();
       setFormData({
@@ -100,7 +100,7 @@ const Market = () => {
   };
   const handleDelete=async(id)=>{
     try {
-      const response=await axios.delete(`http://localhost:5008/api/deleteMarket/${id}`);
+      const response=await axios.delete(`https://apibiri.eazydevz.in/api/deleteMarket/${id}`);
       toast.success(response.data.message);
       fetchData();
     } catch (error) {
@@ -110,7 +110,7 @@ const Market = () => {
 
   const handleSave = async(updatedMarket) => {
     try {
-      const response = await axios.put(`http://localhost:5008/api/updateMarket/${updatedMarket._id}`, {data:updatedMarket});
+      const response = await axios.put(`https://apibiri.eazydevz.in/api/updateMarket/${updatedMarket._id}`, {data:updatedMarket});
       toast.success(response.data.message);
       fetchData();
       
