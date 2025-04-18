@@ -1,0 +1,45 @@
+import React, { use } from "react";
+import { Home, User, Settings} from "lucide-react"; // or use your own icons
+import { Link,useLocation } from "react-router-dom";
+import Market from "../modules/Market/market";
+import {Route,Routes } from "react-router-dom";
+import Customer from "../modules/Customer/customer";
+
+const Sidebar = () => {
+  const location=useLocation();
+  const isActive=(path)=>{
+    return location.pathname===path;
+  }
+  const getBackgroundColor=(path)=>{
+    return isActive(path)?'bg-gray-400':'';
+  }
+  return (
+    <div className="h-screen w-64 bg-gray-800 text-white fixed">
+      <div className="p-4 text-2xl font-bold border-b border-gray-700">
+        Ganesh Biri
+      </div>
+      <nav className="flex flex-col mt-4  space-y-4">
+
+      <Link
+          to="/market"
+          className="flex items-center space-x-2 p-2  hover:bg-gray-400 transition "
+          style={{ backgroundColor: isActive("/market") ? "white" : "transparent",color:isActive("/market")?"black":"white" }}
+        >
+         
+          <span>Market Register</span>
+          </Link>
+          <Link
+          to="/customer"
+          className="flex items-center space-x-2 p-2  hover:bg-gray-400 transition "
+          style={{ backgroundColor: isActive("/customer") ? "white" : "transparent" ,color:isActive("/customer")?"black":"white",border:isActive("/customer")?"2px solid bg-gray-400":"none"}}
+        >
+         
+          <span>Customer Register</span>
+          </Link>
+       
+      </nav>
+    </div>
+  );
+};
+
+export default Sidebar;
