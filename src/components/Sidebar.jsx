@@ -36,6 +36,14 @@ const Sidebar = () => {
          
           <span>Customer Register</span>
           </Link>
+          <Link
+          to="/product"
+          className="flex items-center space-x-2 p-2  hover:bg-gray-400 transition "
+          style={{ backgroundColor: isActive("/product") ? "white" : "transparent" ,color:isActive("/product")?"black":"white",border:isActive("/product")?"2px solid bg-gray-400":"none"}}
+        >
+         
+          <span>Product Register</span>
+          </Link>
        
       </nav>
     </div>

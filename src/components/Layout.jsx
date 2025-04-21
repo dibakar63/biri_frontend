@@ -5,6 +5,7 @@ import Sidebar from './Sidebar';
 import Market from '../modules/Market/market';
 import Customer from '../modules/Customer/customer';
 import { Routes,Route } from 'react-router-dom';
+import Product from '../modules/Product/product';
 
 const Layout = () => {
     return (
@@ -22,6 +23,7 @@ const Layout = () => {
             <Routes>
               <Route path="/market" element={<Market />} />
               <Route path="/customer" element={<Customer />} />
+              <Route path="/product" element={<Product />} />
             </Routes>
           </div>
         </div>
