@@ -162,7 +162,7 @@ const Customer = () => {
   
       // Map over rooms and fetch images dynamically
       const updatedRooms = await Promise.all(
-        rooms.map(async (room) => {
+        rooms.map(async (room) => { 
           if (room.key) {
             const imageResponse = await axios.get(`https://apibiri.eazydevz.in/image?key=${room.key}`, {
                // Assuming image is returned as a blob
