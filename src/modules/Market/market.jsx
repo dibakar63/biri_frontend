@@ -20,7 +20,8 @@ const Market = () => {
   
   const handleInputChange = (e) => {
     
-    const { name, value } = e.target;
+    const { name, value,type } = e.target;
+    const val = type === 'number' ? Number(value) : value;
     setFormData({
       ...formData,
       [name]: value,

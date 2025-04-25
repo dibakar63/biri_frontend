@@ -1,4 +1,5 @@
 import React, { useState, useEffect, use } from 'react';
+import { FaTrash } from 'react-icons/fa';
 
 const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
   const [markets, setMarkets] = useState([]);
@@ -74,6 +75,11 @@ const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
     updatedSales[index][e.target.name] = e.target.value;
     setFormData((prev) => ({ ...prev, saleArray: updatedSales }));
   };
+  const handleDeleteSale = (index) => {
+    const updatedMarket = [...formData.saleArray];
+    updatedMarket.splice(index, 1); // remove the selected item
+    setFormData((prev) => ({ ...prev, saleArray: updatedMarket }));
+  };
   
 
   const handleSubmit = () => {
@@ -142,6 +148,7 @@ const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
           <input name='unit' type="text" id="unit" value={sale.unit} onChange={(e)=>{handleSaleChange(index,e)}} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
 
         </div>
+         <button onClick={()=>handleDeleteSale(index)} className='bg-red-500 text-white p-2 rounded-md'><FaTrash/></button>
         
           </div>
         ))}

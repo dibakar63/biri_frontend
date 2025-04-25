@@ -44,6 +44,31 @@ const Sidebar = () => {
          
           <span>Product Register</span>
           </Link>
+          <Link
+          to="/salePerson"
+          className="flex items-center space-x-2 p-2  hover:bg-gray-400 transition "
+          style={{ backgroundColor: isActive("/salePerson") ? "white" : "transparent" ,color:isActive("/salePerson")?"black":"white",border:isActive("/salePerson")?"2px solid bg-gray-400":"none"}}
+        >
+         
+          <span>Sale Person Register</span>
+          </Link>
+          <Link
+          to="/dailySalePerson"
+          className="flex items-center space-x-2 p-2  hover:bg-gray-400 transition "
+          style={{ backgroundColor: isActive("/dailySalePerson") ? "white" : "transparent" ,color:isActive("/dailySalePerson")?"black":"white",border:isActive("/dailySalePerson")?"2px solid bg-gray-400":"none"}}
+        >
+         
+          <span>Daily Market Sales Person</span>
+          </Link>
+          <Link
+          to="/dailyCustomerInput"
+          className="flex items-center space-x-2 p-2  hover:bg-gray-400 transition "
+          style={{ backgroundColor: isActive("/dailyCustomerInput") ? "white" : "transparent" ,color:isActive("/dailyCustomerInput")?"black":"white",border:isActive("/dailyCustomerInput")?"2px solid bg-gray-400":"none"}}
+        >
+         
+          <span>Daily Customer Input</span>
+          </Link>
+
        
       </nav>
     </div>

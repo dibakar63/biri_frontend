@@ -9,43 +9,108 @@ const Customer = () => {
   const token=Cookie.get('token');
   const [customers,setCustomers] = useState([]);
   const [count,setCount] = useState(1);
+  const [imageKey, setImageKey] = useState('');
   const [markets,setMarkets] = useState([]);
   const [selectedMarket, setSelectedMarket] = useState(null);
+  const [selectedFile,setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phoneNo: '',
     address: '',
     market: '',
-    saleArray:  [{ name: '', quantity: '', unit: '' }],
-    dueAmount:0,
+    saleArray:  [{ name: '', quantity: null, unit: 'packet' }],
+    dueAmount:null,
     weeklySale:"",
     potentialCustomer:false,
-    businessType:""
+    businessType:"",
+    key:''
   });
 
 
   
   const handleInputChange = (e) => {
     
-    const { name, value } = e.target;
+    const { name, value,type } = e.target;
+    const val = type === 'number' ? Number(value) : value;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: val,
     });
   };
   const handleCount = () => {
-    const newSaleArray = [...formData.saleArray, { name: '', quantity: '', unit: 'packet' }];
+    const newSaleArray = [...formData.saleArray, { name: '', quantity: null, unit: 'packet' }];
     setFormData({
       ...formData,
       saleArray: newSaleArray,
     });
   };
-
+  const handlePost = async (base64Image) => {
+    try {
+      setUploading(true);
+  
+      // Convert base64 to Blob
+      const base64ToBlob = (base64) => {
+        const byteString = atob(base64.split(',')[1]);
+        const mimeString = base64.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], { type: mimeString });
+      };
+  
+      const imageBlob = base64ToBlob(base64Image);
+      const formData = new FormData();
+      formData.append('image', imageBlob);
+  
+      const response = await axios.post(
+        "https://apibiri.eazydevz.in/images",
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+  
+      const data = response.data;
+  
+      setFormData((prev) => ({
+        ...prev,
+        key: data.key,
+      }));
+      setImageKey(data.key);
+  
+      toast.success("Image uploaded successfully");
+      console.log(data, 'Upload response');
+    } catch (err) {
+      console.error("Upload failed:", err);
+      toast.error("Image upload failed. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+  
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64Image = reader.result;
+      handlePost(base64Image);
+    };
+    reader.readAsDataURL(file);
+  };
+  
   const handleSalesChange = (index, e) => {
-    const { name, value } = e.target;
+    const { name, value,type } = e.target;
+    const val = type === 'number' ? Number(value) : value;
     const updatedSales = [...formData.saleArray];
-    updatedSales[index][name] = value;
+    updatedSales[index][name] = val;
     setFormData({
       ...formData,
       saleArray: updatedSales,
@@ -81,15 +146,44 @@ const Customer = () => {
     "Uttarakhand",
     "West Bengal"
   ];
-  const fetchData=async()=>{
-    try {
-      const response=await axios.get('https://apibiri.eazydevz.in/api/getCustomer');
-      setCustomers(response.data.customer);
+  // const fetchData=async()=>{
+  //   try {
+  //     const response=await axios.get('https://apibiri.eazydevz.in/api/getCustomer');
+  //     setCustomers(response.data.customer);
      
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`https://apibiri.eazydevz.in/api/getCustomer`);
+      const rooms = response.data.customer;
+  
+      // Map over rooms and fetch images dynamically
+      const updatedRooms = await Promise.all(
+        rooms.map(async (room) => {
+          if (room.key) {
+            const imageResponse = await axios.get(`https://apibiri.eazydevz.in/image?key=${room.key}`, {
+               // Assuming image is returned as a blob
+            });
+  
+            // Create a URL for the image blob
+            room.imageUrl = imageResponse.data;
+          } else {
+            room.imageUrl = null; // Handle cases where image is missing
+          }
+          return room;
+        })
+      );
+  
+      console.log(updatedRooms, 'updatedRooms');
+      setCustomers(updatedRooms);
     } catch (error) {
-      console.log(error);
+      console.error('Error fetching data:', error);
     }
-  }
+  };
+  console.log(customers, 'customers');
   const fetchMarketData=async()=>{
     try {
       const response=await axios.get('https://apibiri.eazydevz.in/api/getMarket');
@@ -109,7 +203,8 @@ const Customer = () => {
       dueAmount:formData.dueAmount,
       weeklySale:formData.weeklySale,
       potentialCustomer:formData.potentialCustomer,
-      businessType:formData.businessType
+      businessType:formData.businessType,
+      key:imageKey
 
     }
     
@@ -124,11 +219,12 @@ const Customer = () => {
         address: '',
         market: '',
         saleArray: [],
-        dueAmount:0,
+        dueAmount:null,
         weeklySale:"",
         potentialCustomer:false,
-        businessType:""
-      });
+        businessType:"",
+        key:"",
+              });
       //alert(response.data.message);
     } catch (error) {
       toast.error(error.response.data.message);
@@ -206,14 +302,14 @@ const Customer = () => {
           <textarea name="address" id="address" value={formData.address} onChange={(e)=>{handleInputChange(e)}} rows="3" className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
           </div>
         </div>
-        <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+        <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-10">
           <label for="marketAddress" className="block text-sm/6 font-medium text-gray-900">PhoneNo</label> 
 
           <div className="mt-2">
           <input name="phoneNo" id="phoneNo" value={formData.phoneNo} onChange={(e)=>{handleInputChange(e)}}  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
           </div>
         </div>
-        <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+        <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-10">
           <label for="marketCity" className="block text-sm/6 font-medium text-gray-900">Market City/Village</label>
           <div className="mt-2">
             <select type="text" name="market" id="market" placeholer='Select Market'  value={formData.market} onChange={(e)=>handleInputChange(e)} className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
@@ -228,6 +324,14 @@ const Customer = () => {
             </select>
           </div>
         </div>
+        <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+          <label for="marketCity" className="block text-sm/6 font-medium text-gray-900">Image Upload</label>
+          <div className="mt-2">
+            <input type="file" name="key" id="key"   onChange={(e)=>handleFileChange(e)} className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
+           
+          </div>
+        </div>
+        
        <div className='sm:col-span-6 bg-[#F2F1F1] rounded-md shadow-lg p-10'>
        <div className='flex flex-row justify-end gap-5 items-center'>  
        <h1>Opponent Sales Array</h1>
@@ -365,6 +469,7 @@ const Customer = () => {
             <th className="px-2 py-3 text-left text-xsm font-semibold">Name</th>
             <th className="px-2 py-3 text-left text-xsm font-semibold">Address</th>
             <th className="px-2 py-3 text-left text-xsm font-semibold">Phone</th>
+            <th className="px-2 py-3 text-left text-xsm font-semibold">Image</th>
             <th className="px-2 py-3 text-left text-xsm font-semibold">Market</th>
             <th className="px-2 py-3 text-left text-xsm font-semibold">Opponent Sales</th>
             <th className="px-2 py-3 text-left text-xsm font-semibold">Due Amount</th>
@@ -382,6 +487,8 @@ const Customer = () => {
               <td className="px-2 py-4 text-xsm text-gray-900">{market.name}</td>
               <td className="px-2 py-4 text-xsm text-gray-900">{market.address}</td>
               <td className="px-2 py-4 text-xsm text-gray-900">{market.phoneNo}</td>
+              <td className="px-2 py-4 text-xsm text-gray-900"><img src={market.imageUrl} w-50 h-50/></td>
+
               <td className="px-2 py-4 text-xsm text-gray-900">{market.market}</td>
               <td className="px-2 py-4 text-xsm text-gray-900">
                 <div className="overflow-x-auto">
