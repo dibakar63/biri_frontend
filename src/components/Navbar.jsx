@@ -1,7 +1,23 @@
 import React,{useState} from 'react';
+import Cookies  from 'js-cookie';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../utils/redux/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar=()=>{
   const [toggle,setToggle]=useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const {  error, loading } = useSelector((state) => state.auth);
+  const token=Cookies.get('token');
+  console.log(token,'token');
+  
+const handleLogout = () => {
+  dispatch(logout());
+  navigate('/login');
+  window.location.reload('/login');
+};
+  
   const handleToggle=()=>{
     setToggle(!toggle);
   }
@@ -31,9 +47,10 @@ const Navbar=()=>{
           <div className="flex space-x-4">
           
             {/* <a href="#" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Dashboard</a> */}
-            <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Dashboard</a>
+            <a href="/dashboard" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Dashboard</a>
             <a href="/dailySaleReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Daily Report</a>
             <a href="/dailyCustomerInputReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Daily Customer Input</a>
+            <a href="/dailyMarketInputReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Daily Market Input</a>
           </div>
         </div>
       </div>
@@ -43,7 +60,8 @@ const Navbar=()=>{
           <div className="flex space-x-4">
           
             {/* <a href="#" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Dashboard</a> */}
-            <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Login</a>
+          {!token? <a href="/login" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Login</a>:
+            <button onClick={handleLogout} className="rounded-md px-3 py-2 text-sm font-medium text-white bg-red-700 ">Logout</button>}  
           
           </div>
         </div>

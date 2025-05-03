@@ -68,6 +68,14 @@ const Sidebar = () => {
          
           <span>Daily Customer Input</span>
           </Link>
+          <Link
+          to="/dailyMarketInput"
+          className="flex items-center space-x-2 p-2  hover:bg-gray-400 transition "
+          style={{ backgroundColor: isActive("/dailyMarketInput") ? "white" : "transparent" ,color:isActive("/dailyMarketInput")?"black":"white",border:isActive("/dailyMarketInput")?"2px solid bg-gray-400":"none"}}
+        >
+         
+          <span>Daily Market Input</span>
+          </Link>
 
        
       </nav>
