@@ -43,12 +43,12 @@ const handleLogout = () => {
       </div>
       <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
         
-        <div className="hidden sm:ml-6 sm:block">
+        <div className="hidden sm:ml-8 sm:block">
           <div className="flex space-x-4">
           
             {/* <a href="#" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Dashboard</a> */}
             <a href="/dashboard" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Dashboard</a>
-            <a href="/dailySaleReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Daily Report</a>
+            <a href="/dailySaleReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Daily Saleperson </a>
             <a href="/dailyCustomerInputReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Daily Customer Input</a>
             <a href="/dailyMarketInputReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Daily Market Input</a>
           </div>
@@ -56,7 +56,7 @@ const handleLogout = () => {
       </div>
       <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-end">
         
-        <div className="hidden sm:ml-6 sm:block">
+        <div className="hidden sm:ml-4 sm:block">
           <div className="flex space-x-4">
           
             {/* <a href="#" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Dashboard</a> */}

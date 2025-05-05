@@ -3,10 +3,13 @@ import React,{use, useState,useEffect} from 'react';
 import toast from 'react-hot-toast';
 //import EditMarketModal from './editDailySalePerson';
 import Cookie from 'js-cookie'
+import EditDailyPersonModal from './editDailySalePerson';
 
 const DailySalePersonReport = () => {
   const token=Cookie.get('token');
   const [markets,setMarkets] = useState([]);
+  const [marketName,setMarketName] = useState([]);
+  const [salePersons,setSalePersons] = useState([]);
   const [selectedMarket, setSelectedMarket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const  [formData, setFormData] = useState({
@@ -37,7 +40,24 @@ const year = date.getFullYear();
 const formattedDate = `${day}/${month}/${year}`;
 return formattedDate;
   }
- 
+  const fetchData=async()=>{
+    try {
+      const response=await axios.get('https://apibiri.eazydevz.in/api/getMarket');
+      setMarketName(response.data.market);
+     
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const fetchSalesPersonData=async()=>{
+    try {
+      const response=await axios.get('https://apibiri.eazydevz.in/api/getSalePerson');
+      setSalePersons(response.data.salePerson);
+     
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const filterData=async()=>{
     const startDate = formData.startDate;
@@ -59,6 +79,9 @@ return formattedDate;
     try {
       const response=await axios.delete(`https://apibiri.eazydevz.in/api/deleteDailySalePerson/${id}`);
       
+
+
+
       filterData()
     } catch (error) {
       toast.error(error.response.data.message);
@@ -82,6 +105,11 @@ return formattedDate;
   useEffect(() => {
     filterData();
   }, [formData.startDate,formData.endDate]);
+  useEffect(() => {
+    fetchData();
+    filterData();
+    fetchSalesPersonData();
+  }, []);
   
   
   return (
@@ -93,12 +121,14 @@ return formattedDate;
    {/* <button onClick={filterData} className='bg-indigo-600 text-white px-4 py-2 rounded-md'>Filter</button> */}
     </div>
   
-    {/* <EditMarketModal
+    <EditDailyPersonModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
         market={selectedMarket}
-      /> */}
+        salePersons={salePersons}
+        marketData={marketName}
+      />
 
 
 <div className="p-6">
