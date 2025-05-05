@@ -91,9 +91,11 @@ return formattedDate;
 
   const handleSave = async(updatedMarket) => {
     try {
-      const response = await axios.put(`https://apibiri.eazydevz.in/api/updateDailySalePerson/${updatedMarket._id}`, {data:updatedMarket});
+      const response = await axios.put(`https://apibiri.eazydevz.in/api/updateDailySalePerson/${selectedMarket._id}`, {data:updatedMarket});
       toast.success(response.data.message);
       fetchData();
+      filterData();
+      setSelectedMarket(null);
       
     } catch (error) {
         toast.error(error.response.data.message);
