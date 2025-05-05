@@ -3,11 +3,14 @@ import React,{use, useState,useEffect} from 'react';
 import toast from 'react-hot-toast';
 //import EditMarketModal from './editDailySalePerson';
 import Cookie from 'js-cookie'
+import EditCustomerDailyInputModal from './editCustomerDailyInput';
 
 const CustomerInputReport =()=>{
   const token=Cookie.get('token');
   const [markets,setMarkets] = useState([]);
   const [selectedMarket, setSelectedMarket] = useState(null);
+  const [customers,setCustomerName]=useState([]);
+  const [products,setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const  [formData, setFormData] = useState({
     
@@ -26,6 +29,24 @@ const CustomerInputReport =()=>{
       [name]: value,
     });
   };
+  const fetchData=async()=>{
+    try {
+      const response=await axios.get('https://apibiri.eazydevz.in/api/getCustomer');
+      setCustomerName(response.data.customer);
+     
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const fetchProductData=async()=>{
+    try {
+      const response=await axios.get('https://apibiri.eazydevz.in/api/getProduct');
+      setProducts(response.data.product);
+     
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const formatDate=(isoDate)=>{
     
 const date = new Date(isoDate);
@@ -68,9 +89,11 @@ return formattedDate;
 
   const handleSave = async(updatedMarket) => {
     try {
-      const response = await axios.put(`https://apibiri.eazydevz.in/api/updateDailySalePerson/${updatedMarket._id}`, {data:updatedMarket});
+      const response = await axios.put(`https://apibiri.eazydevz.in/api/updateCustomerDailyInput/${selectedMarket._id}`, {data:updatedMarket});
       toast.success(response.data.message);
       fetchData();
+      filterData();
+      setSelectedMarket(null);
       
     } catch (error) {
         toast.error(error.response.data.message);
@@ -80,8 +103,15 @@ return formattedDate;
   
 
   useEffect(() => {
+    
     filterData();
+    
   }, [formData.startDate,formData.endDate]);
+  useEffect(() => {
+    fetchData();
+    fetchProductData();
+    filterData();
+  }, []);
   
   
   return (
@@ -93,12 +123,14 @@ return formattedDate;
    {/* <button onClick={filterData} className='bg-indigo-600 text-white px-4 py-2 rounded-md'>Filter</button> */}
     </div>
   
-    {/* <EditMarketModal
+    <EditCustomerDailyInputModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
         market={selectedMarket}
-      /> */}
+        productData={products}
+        customerName={customers}
+      />
 
 
 <div className="p-6">

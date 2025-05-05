@@ -58,8 +58,8 @@ return formattedDate;
   const handleDelete=async(id)=>{
     try {
       const response=await axios.delete(`https://apibiri.eazydevz.in/api/deleteDailySalePerson/${id}`);
-      toast.success(response.data.message);
-      fetchData();
+      
+      filterData()
     } catch (error) {
       toast.error(error.response.data.message);
     }

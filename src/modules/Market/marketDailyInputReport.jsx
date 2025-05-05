@@ -3,10 +3,13 @@ import React,{use, useState,useEffect} from 'react';
 import toast from 'react-hot-toast';
 //import EditMarketModal from './editDailySalePerson';
 import Cookie from 'js-cookie'
+import EditMarketDailyInputModal from './editMarketDailyInput';
 
 const MarketInputReport =()=>{
   const token=Cookie.get('token');
   const [markets,setMarkets] = useState([]);
+  const [marketName,setMarketName]=useState([]);
+  const [products,setProducts] = useState([]);
   const [selectedMarket, setSelectedMarket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const  [formData, setFormData] = useState({
@@ -15,7 +18,15 @@ const MarketInputReport =()=>{
     endDate: '',
 
   });
-
+  const fetchProductData=async()=>{
+    try {
+      const response=await axios.get('https://apibiri.eazydevz.in/api/getProduct');
+      setProducts(response.data.product);
+     
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   
   const handleInputChange = (e) => {
@@ -37,7 +48,15 @@ const year = date.getFullYear();
 const formattedDate = `${day}/${month}/${year}`;
 return formattedDate;
   }
- 
+  const fetchData=async()=>{
+    try {
+      const response=await axios.get('https://apibiri.eazydevz.in/api/getMarket');
+      setMarketName(response.data.market);
+     
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const filterData=async()=>{
     const startDate = formData.startDate;
@@ -68,9 +87,11 @@ return formattedDate;
 
   const handleSave = async(updatedMarket) => {
     try {
-      const response = await axios.put(`https://apibiri.eazydevz.in/api/updateDailySalePerson/${updatedMarket._id}`, {data:updatedMarket});
+      const response = await axios.put(`https://apibiri.eazydevz.in/api/updateMarketDailyInput/${selectedMarket._id}`, {data:updatedMarket});
       toast.success(response.data.message);
       fetchData();
+      filterData();
+      setSelectedMarket(null);
       
     } catch (error) {
         toast.error(error.response.data.message);
@@ -81,7 +102,13 @@ return formattedDate;
 
   useEffect(() => {
     filterData();
+    
   }, [formData.startDate,formData.endDate]);
+  useEffect(() => {
+    fetchData();
+    filterData();
+    fetchProductData();
+  }, []);
   
   
   return (
@@ -93,12 +120,14 @@ return formattedDate;
    {/* <button onClick={filterData} className='bg-indigo-600 text-white px-4 py-2 rounded-md'>Filter</button> */}
     </div>
   
-    {/* <EditMarketModal
+    <EditMarketDailyInputModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
         market={selectedMarket}
-      /> */}
+        marketName={marketName}
+        productData={products}
+      />
 
 
 <div className="p-6">
