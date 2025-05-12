@@ -1,7 +1,7 @@
 import React, { useState, useEffect, use } from 'react';
 import { FaTrash } from 'react-icons/fa';
 
-const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
+const OpenCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
   const [markets, setMarkets] = useState([]);
     const indianStates = [
         "Andhra Pradesh",
@@ -92,18 +92,18 @@ const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
   return (
     <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4" role="dialog" aria-modal="true">
       <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto bg-white p-6 rounded-xl shadow-lg">
-        <span className="text-2xl text-center font-semibold mb-2">Edit Customer {formData.name}</span>
+        <span className="text-2xl text-center font-semibold mb-2">Open Customer {formData.name}</span>
         <div className='flex flex-col items-center justify-between w-full gap-2 p-2'>
 
         <div className="flex flex-row  mt-2 w-full justify-evenly p-4 gap-4 items-center ">
         <div className='sm:col-span-3 p-4 bg-[#F2F1F1] w-[47%]'>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-          <input name='name' type="text" id="name" value={formData.name} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
+          <input name='name' type="text" id="name" value={formData.name} onChange={handleChange} readOnly className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
 
         </div>
         <div className='sm:col-span-3 p-4 bg-[#F2F1F1] w-[47%]'>
           <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
-          <textarea name='address' type="text" id="address" value={formData.address} onChange={handleChange} rows={2} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
+          <textarea name='address' type="text" id="address" value={formData.address} readOnly onChange={handleChange} rows={2} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
 
         </div>
 
@@ -111,20 +111,13 @@ const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
         <div className="flex flex-row  mt-2 w-full justify-evenly p-4 gap-4 items-center ">
         <div className='sm:col-span-3 p-4 bg-[#F2F1F1] w-[47%]'>
           <label htmlFor="phoneNo" className="block text-sm font-medium text-gray-700">PhoneNo</label>
-          <input name='phoneNo' type="text" id="phoneNo" value={formData.phoneNo} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
+          <input name='phoneNo' type="text" id="phoneNo" value={formData.phoneNo} readOnly onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
 
         </div>
         <div className='sm:col-span-3 p-4 bg-[#F2F1F1] w-[47%]'>
           <label htmlFor="market" className="block text-sm font-medium text-gray-700">Market</label>
-          <select name='market' type="text" id="market" value={formData.market} onChange={handleChange}  className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" >
-          <option value="" disabled selected hidden>Select Market</option>
-          {marketData.map((market, index) => (
-            <option key={index} value={market.marketName}>
-              {market.marketName}
-            </option>
-          ))}
-
-          </select>
+          <input name='market' type="text" id="market" value={formData.market} readOnly onChange={handleChange}  className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
+         
 
         </div>
 
@@ -135,20 +128,20 @@ const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
           <div className='flex flex-row justify-between w-full p-2' key={index}>
           <div className='sm:col-span-3 p-4 bg-[#F2F1F1] w-[47%]'>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-          <input name='name' type="text" id="name" value={sale.name} onChange={(e)=>{handleSaleChange(index,e)}} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
+          <input name='name' type="text" id="name" value={sale.name} readOnly onChange={(e)=>{handleSaleChange(index,e)}} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
 
         </div>
         <div className='sm:col-span-3 p-4 bg-[#F2F1F1] w-[47%]'>
           <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Qty</label>
-          <input name='quantity' type="text" id="quantity" value={sale.quantity} onChange={(e)=>{handleSaleChange(index,e)}} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
+          <input name='quantity' type="text" id="quantity" readOnly value={sale.quantity} onChange={(e)=>{handleSaleChange(index,e)}} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
 
         </div>
         <div className='sm:col-span-3 p-4 bg-[#F2F1F1] w-[47%]'>
           <label htmlFor="unit" className="block text-sm font-medium text-gray-700">Name</label>
-          <input name='unit' type="text" id="unit" value={sale.unit} onChange={(e)=>{handleSaleChange(index,e)}} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
+          <input name='unit' type="text" id="unit" value={sale.unit} readOnly onChange={(e)=>{handleSaleChange(index,e)}} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
 
         </div>
-         <button onClick={()=>handleDeleteSale(index)} className='bg-red-500 text-white p-2 rounded-md'><FaTrash/></button>
+         {/* <button onClick={()=>handleDeleteSale(index)} className='bg-red-500 text-white p-2 rounded-md'><FaTrash/></button> */}
         
           </div>
         ))}
@@ -158,24 +151,18 @@ const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
         <div className="flex flex-row  mt-2 w-full justify-evenly p-4 gap-4 items-center ">
         <div className='sm:col-span-2 p-4 bg-[#F2F1F1] w-[47%]'>
           <label htmlFor="dueAmount" className="block text-sm font-medium text-gray-700">Due Amount</label>
-          <input name='dueAmount' type="number" id="dueAmount" value={formData.dueAmount} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
+          <input name='dueAmount' type="number" id="dueAmount" readOnly value={formData.dueAmount} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
 
         </div>
         <div className='sm:col-span-2 p-4 bg-[#F2F1F1] w-[47%]'>
           <label htmlFor="weeklySale" className="block text-sm font-medium text-gray-700">Weekly Sale</label>
-          <input name='weeklySale' type="number" id="weeklySale" value={formData.weeklySale} onChange={handleChange}  className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
+          <input name='weeklySale' type="number" id="weeklySale" readOnly value={formData.weeklySale} onChange={handleChange}  className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
 
         </div>
         <div className='sm:col-span-2 p-4 bg-[#F2F1F1] w-[47%]'>
           <label htmlFor="businessType" className="block text-sm font-medium text-gray-700">Business Type</label>
-          <select name='businessType' type="text" id="businessType" value={formData.businessType} onChange={handleChange}  className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" >
-          <option value="" disabled selected hidden>Select BusinessType</option>
-          
-          <option value="Retail">Retail</option>
-          <option value="Wholesale">Wholesale</option>
+          <input name='businessType' type="text" id="businessType" readOnly value={formData.businessType} onChange={handleChange}  className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
          
-
-          </select>
 
         </div>
 
@@ -226,16 +213,16 @@ const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
           >
             Cancel
           </button>
-          <button
+          {/* <button
             onClick={handleSubmit}
             className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
           >
             Save
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
   );
 };
 
-export default EditCustomerModal;
+export default OpenCustomerModal;

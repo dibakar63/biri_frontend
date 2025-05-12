@@ -3,6 +3,7 @@ import React,{use, useState,useEffect} from 'react';
 import toast from 'react-hot-toast';
 import { FaPlus } from 'react-icons/fa';
 import Cookie from 'js-cookie'
+import { IoMdClose } from "react-icons/io";
 
 const DailySalePerson = () => {
   const token=Cookie.get('token');
@@ -13,7 +14,8 @@ const DailySalePerson = () => {
   const [formData, setFormData] = useState({
     market: [],
     salePersons: [],
-    date: '',
+    date: new Date().toISOString().split('T')[0],
+    
     time: '',
     
   });
@@ -81,6 +83,7 @@ const DailySalePerson = () => {
       salePersons:formData.salePersons,
       date:formData.date,
       time:formData.time,
+    
 
     }
     
@@ -93,7 +96,8 @@ const DailySalePerson = () => {
         market:[],
         salePersons:[],
         date:'',
-        time:''
+        time:'',
+      
       });
       //alert(response.data.message);
     } catch (error) {
@@ -126,6 +130,11 @@ const DailySalePerson = () => {
       market: updatedSales,
     });
   };
+      const handleDeleteSale = (index) => {
+    const updatedMarket = [...formData.market];
+    updatedMarket.splice(index, 1); // remove the selected item
+    setFormData((prev) => ({ ...prev, market: updatedMarket }));
+  };
   const handleSalesChange1 = (index, e) => {
     const { name, value } = e.target;
     const updatedSales = [...formData.salePersons];
@@ -134,6 +143,12 @@ const DailySalePerson = () => {
       ...formData,
       salePersons: updatedSales,
     });
+  };
+      const handleDeleteSale1 = (index) => {
+    const updatedMarket = [...formData.salePersons];
+    updatedMarket.splice(index, 1); // remove the selected item
+   
+    setFormData((prev) => ({ ...prev, salePersons: updatedMarket }));
   };
   const handleEdit = (market) => {
     setSelectedMarket(market);
@@ -205,7 +220,7 @@ const DailySalePerson = () => {
                    className=" w-fit-content bg-[#F2F2F2]  rounded-md shadow-lg p-2 flex flex-row justify-between items-center"
                  >
                  {/* <h1>Sl No - {index+1}</h1> */}
-                   <div className="mt-2">
+                   <div className="mt-2 relative">
                      {/* <label htmlFor="name" className="block text-sm font-medium text-gray-900">Name</label> */}
                      <select
                        name="name"
@@ -222,6 +237,7 @@ const DailySalePerson = () => {
                            </option>
                          ))}
                      </select>
+                      <button className='absolute top-2 right-4 text-red-500 hover:text-red-700  text-xl' onClick={()=>handleDeleteSale(index)}><IoMdClose/></button>
                    </div>
          
          
@@ -251,7 +267,7 @@ const DailySalePerson = () => {
                    className=" w-fit-content bg-[#F2F2F2]  rounded-md shadow-lg p-2 flex flex-row justify-between items-center"
                  >
                  {/* <h1>Sl No - {index+1}</h1> */}
-                   <div className="mt-2">
+                   <div className="mt-2 relative">
                      {/* <label htmlFor="name" className="block text-sm font-medium text-gray-900">Name</label> */}
                      <select
                        name="name"
@@ -268,6 +284,7 @@ const DailySalePerson = () => {
                            </option>
                          ))}
                      </select>
+                     <button className='absolute top-2 right-4 text-red-500 hover:text-red-700  text-xl' onClick={()=>handleDeleteSale1(index)}><IoMdClose/></button>
                    </div>
          
          
@@ -278,11 +295,31 @@ const DailySalePerson = () => {
                </div>
         </div>
         <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
-          <label for="phoneNo" className="block text-sm/6 font-medium text-gray-900">Date</label>
-          <div className="mt-2">
-          <input name="date" id="date" value={formData.date} type='date' onChange={(e)=>{handleInputChange(e)}}  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
-          </div>
-        </div>
+  <label htmlFor="date" className="block text-sm/6 font-medium text-gray-900">Date</label>
+  <div className="mt-2">
+    <select
+      name="date"
+      id="date"
+      value={formData.date}
+      onChange={(e)=>{handleInputChange(e)}}
+      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+    >
+      {Array.from({ length: 7 }).map((_, index) => {
+        const date = new Date();
+        date.setDate(date.getDate() + index);
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+        const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
+        return (
+          <option key={index} value={dateStr}>
+            {dayName} - {dateStr}
+          </option>
+        );
+      })}
+    </select>
+  </div>
+</div>
+  
+
         <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
           <label for="phoneNo" className="block text-sm/6 font-medium text-gray-900">Time</label>
           <div className="mt-2">

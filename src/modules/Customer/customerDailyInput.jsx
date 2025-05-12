@@ -13,6 +13,7 @@ const DailyCustomerInput = () => {
   const [markets, setMarkets] = useState([]);
   const [selectedMarket, setSelectedMarket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [marketName,setMarketName]=useState([]);
   const [formData, setFormData] = useState({
     name: "",
 
@@ -54,11 +55,15 @@ const DailyCustomerInput = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://apibiri.eazydevz.in/api/getCustomer"
+        `https://apibiri.eazydevz.in/api/getCustomerByMarket?market=${marketName}`,
       );
       setCustomers(response.data.customer);
     } catch (error) {
-      console.log(error);
+      if (error.response.status === 404) {
+        toast.error(`No Customer Found in ${marketName}`);
+      } else {
+        console.log(error);
+      }
     }
   };
   const fetchProductData = async () => {
@@ -71,6 +76,15 @@ const DailyCustomerInput = () => {
       console.log(error);
     }
   };
+    const fetchMarketData=async()=>{
+    try {
+      const response=await axios.get('https://apibiri.eazydevz.in/api/getMarket');
+      setMarkets(response.data.market);
+     
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const hanldePost = async () => {
     const updateFormData = {
@@ -130,8 +144,12 @@ const DailyCustomerInput = () => {
   useEffect(() => {
     fetchData();
     fetchProductData()
+    fetchMarketData();
    
   }, []);
+  useEffect(()=>{
+    fetchData();
+  },[marketName])
 
   return (
     <div className="w-full h-full bg-[#DDDCDC] p-10 ">
@@ -221,7 +239,28 @@ const DailyCustomerInput = () => {
                   </div>
                 ))}
               </div>
-              <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+               <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+                
+                <div className="mt-2" >
+                <label htmlFor="marketName" className="block text-sm font-medium text-gray-900">Market </label>
+                  <select
+                    name="marketName"
+                    
+                    id="marketName"
+                    value={marketName}
+                    onChange={(e) => setMarketName(e.target.value)}
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                  >
+                    <option value="">Select Market</option>
+                    {markets.map((market) => (
+                      <option key={market._id} value={market.marketName}>
+                        {market.marketName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
                   <label
                     for="name"
                     className="block text-sm/6 font-medium text-gray-900"
@@ -249,7 +288,7 @@ const DailyCustomerInput = () => {
                     </select>
                   </div>
                 </div>
-              <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+              <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
                 <label
                   for="paid"
                   className="block text-sm/6 font-medium text-gray-900"
@@ -268,7 +307,7 @@ const DailyCustomerInput = () => {
                 </div>
               </div>
 
-              <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+              <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
                 <label
                   for="due"
                   className="block text-sm/6 font-medium text-gray-900"

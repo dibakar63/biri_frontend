@@ -1,14 +1,20 @@
 import axios from 'axios';
-import React,{use, useState,useEffect} from 'react';
+import React,{ useState,useEffect} from 'react';
 import toast from 'react-hot-toast';
 import EditSalePersonModal from './editSalePerson';
 import Cookie from 'js-cookie'
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaTrash, } from 'react-icons/fa';
+import {  } from "react-icons/io";
+import { IoMdClose } from "react-icons/io";
+import DeleteSalePersonModal from './deleteSalePerson';
+
 const SalePerson = () => {
   const token=Cookie.get('token');
   const [products,setProducts] = useState([]);
   const [markets,setMarkets] = useState([]);
   const [selectedMarket, setSelectedMarket] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteId,setDeleteId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name:"",
@@ -34,6 +40,11 @@ const SalePerson = () => {
       market: newSaleArray,
     });
   };
+     const handleDeleteOpen=(market)=>{
+      setDeleteId(market._id)
+     setSelectedMarket(market);
+    setDeleteModalOpen(true);
+  }
 
   const handleSalesChange = (index, e) => {
     const { name, value } = e.target;
@@ -43,6 +54,12 @@ const SalePerson = () => {
       ...formData,
       market: updatedSales,
     });
+  };
+    const handleDeleteSale = (index) => {
+    const updatedMarket = [...formData.market];
+    updatedMarket.splice(index, 1); // remove the selected item
+  
+    setFormData((prev) => ({ ...prev, market: updatedMarket }));
   };
   const indianStates = [
     "Andhra Pradesh",
@@ -170,6 +187,14 @@ const SalePerson = () => {
         onSave={handleSave}
         market={selectedMarket}
       />
+       <DeleteSalePersonModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onSave={()=>handleDelete(deleteId)}
+        market={selectedMarket}
+        id={deleteId}
+        setId={setDeleteId}
+      />
 
     <div className="border-b border-gray-900/10 pb-12">
      
@@ -212,7 +237,7 @@ const SalePerson = () => {
           className=" w-fit-content bg-[#F2F2F2]  rounded-md shadow-lg p-2 flex flex-row justify-between items-center"
         >
         {/* <h1>Sl No - {index+1}</h1> */}
-          <div className="mt-2">
+          <div className="mt-2 relative">
             {/* <label htmlFor="name" className="block text-sm font-medium text-gray-900">Name</label> */}
             <select
               name="name"
@@ -229,7 +254,12 @@ const SalePerson = () => {
                   </option>
                 ))}
             </select>
+             <button className='absolute top-0 right-0 cursor-pointer text-red-500 hover:text-red-700  text-3xl' onClick={()=>handleDeleteSale(index)}><IoMdClose/></button>
+           
           </div>
+          
+           
+          
 
 
           
@@ -297,7 +327,7 @@ const SalePerson = () => {
                 <td className="px-6 py-4 text-sm text-gray-900">{market.market.map((markets)=>(markets.name+" , "))}</td>
                
                 <td className="px-6 py-4 text-md text-gray-900"><button className='bg-green-500 p-2 rounded-md text-white' onClick={()=>handleEdit(market)}>Edit</button></td>
-                <td className="px-6 py-4 text-md text-gray-900"><button className='bg-red-500 p-2 text-md rounded-md text-white' onClick={()=>handleDelete(market._id)}>Delete</button></td>
+                <td className="px-6 py-4 text-md text-gray-900"><button className='bg-red-500 p-2 text-md rounded-md text-white' onClick={()=>handleDeleteOpen(market)}>Delete</button></td>
               </tr>
             ))}
           </tbody>

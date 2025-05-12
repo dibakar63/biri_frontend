@@ -3,7 +3,9 @@ import React,{use, useState,useEffect} from 'react';
 import toast from 'react-hot-toast';
 import EditCustomerModal from './editCustomer';
 import Cookie from 'js-cookie'
-import { FaMinus, FaPlus } from 'react-icons/fa';
+import { FaMinus, FaPlus,FaTrash } from 'react-icons/fa';
+import OpenCustomerModal from './customerModal';
+import DeleteCustomerModal from './deleteModal';
 
 const Customer = () => {
   const token=Cookie.get('token');
@@ -15,6 +17,9 @@ const Customer = () => {
   const [selectedFile,setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen1, setIsModalOpen1] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteId,setDeleteId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     phoneNo: '',
@@ -27,6 +32,10 @@ const Customer = () => {
     businessType:"",
     key:''
   });
+  const [marketFilter, setMarketFilter] = useState({
+    marketName:'',
+    customerName:'',
+  }); 
 
 
   
@@ -39,6 +48,13 @@ const Customer = () => {
       [name]: val,
     });
   };
+  const hadleFilterChange=(e)=>{
+    const {name,value}=e.target;
+    setMarketFilter({
+      ...marketFilter,
+      [name]:value
+    })
+  }
   const handleCount = () => {
     const newSaleArray = [...formData.saleArray, { name: '', quantity: null, unit: 'packet' }];
     setFormData({
@@ -116,6 +132,12 @@ const Customer = () => {
       saleArray: updatedSales,
     });
   };
+    const handleDeleteSale = (index) => {
+    const updatedMarket = [...formData.saleArray];
+    updatedMarket.splice(index, 1); // remove the selected item
+    setFormData((prev) => ({ ...prev, saleArray: updatedMarket }));
+  };
+  
   const indianStates = [
     "Andhra Pradesh",
     "Arunachal Pradesh",
@@ -155,9 +177,23 @@ const Customer = () => {
   //     console.log(error);
   //   }
   // }
+  const clearMarketName=()=>{
+    setMarketFilter({
+      ...marketFilter,
+      marketName:''
+    })
+  }
+  const customerFilter =()=>{
+    setMarketFilter({
+      ...marketFilter,
+      customerName:''
+    })
+  }
   const fetchData = async () => {
+    const marketName=marketFilter.marketName;
+    const customerName=marketFilter.customerName;
     try {
-      const response = await axios.get(`https://apibiri.eazydevz.in/api/getCustomer`);
+      const response = await axios.get(`https://apibiri.eazydevz.in/api/getCustomerByMarket?market=${marketName}&name=${customerName}`);
       const rooms = response.data.customer;
   
       // Map over rooms and fetch images dynamically
@@ -181,7 +217,11 @@ const Customer = () => {
       console.log(updatedRooms, 'updatedRooms');
       setCustomers(updatedRooms);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      if(error.response && error.response.status === 404) {
+       // toast.error(`Customer not found`);
+      } else {
+        console.error("Error fetching data:", error);
+      }
     }
   };
   console.log(customers, 'customers');
@@ -237,10 +277,21 @@ const Customer = () => {
     setSelectedMarket(market);
     setIsModalOpen(true);
   };
+  const handleOpen=(market)=>{
+    setSelectedMarket(market);
+    setIsModalOpen1(true);
+  }
+
+    const handleDeleteOpen=(market)=>{
+      setDeleteId(market._id)
+     setSelectedMarket(market);
+    setDeleteModalOpen(true);
+  }
   const handleDelete=async(id)=>{
     try {
       const response=await axios.delete(`https://apibiri.eazydevz.in/api/deleteCustomer/${id}`);
       toast.success(response.data.message);
+      setDeleteId(null);
       fetchData();
     } catch (error) {
       toast.error(error.response.data.message);
@@ -264,6 +315,9 @@ const Customer = () => {
     fetchData();
     fetchMarketData();
   }, []);
+  useEffect(()=>{
+    fetchData();
+  },[marketFilter.marketName,marketFilter.customerName])
   
   
   return (
@@ -284,6 +338,22 @@ const Customer = () => {
         onSave={handleSave}
         market={selectedMarket}
         marketData={markets}
+      />
+      <OpenCustomerModal
+          isOpen={isModalOpen1}
+        onClose={() => setIsModalOpen1(false)}
+        onSave={handleSave}
+        market={selectedMarket}
+        marketData={markets}
+
+      />
+      <DeleteCustomerModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onSave={()=>handleDelete(deleteId)}
+        market={selectedMarket}
+        id={deleteId}
+        setId={setDeleteId}
       />
 
     <div className="border-b border-gray-900/10 pb-12">
@@ -380,6 +450,7 @@ const Customer = () => {
               className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
             />
           </div>
+           <button onClick={()=>handleDeleteSale(index)} className='bg-red-500 text-white p-2 rounded-md'><FaTrash/></button>
 
           
          
@@ -388,19 +459,19 @@ const Customer = () => {
       </div>
     
 
-        <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+        <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-10">
           <label for="dueAmount" className="block text-sm/6 font-medium text-gray-900">Due Amount</label>
           <div className="mt-2">
           <input name="dueAmount" type='number' id="dueAmount" value={formData.dueAmount} onChange={(e)=>handleInputChange(e)} className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
         </div>
         </div>
-        <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+        <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-10">
           <label for="weeklySale" className="block text-sm/6 font-medium text-gray-900">Weekly Sale</label>
           <div className="mt-2">
           <input name="weeklySale" id="weeklySale" type='number' value={formData.weeklySale} onChange={(e)=>handleInputChange(e)} className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
         </div>
         </div>
-        <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+        {/* <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
           <label for="potentialCustomer" className="block text-sm/6 font-medium text-gray-900">Potential Customer</label>
           <div className="mt-2">
           <select name="potentialCustomer" id="potentialCustomer"   value={formData.potentialCustomer} onChange={(e)=>handleInputChange(e)} className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
@@ -411,8 +482,8 @@ const Customer = () => {
             <option value="false">No</option>
           </select>
         </div>
-        </div>
-        <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+        </div> */}
+        <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-10">
           <label for="businessType" className="block text-sm/6 font-medium text-gray-900">BusinessType</label>
           <div className="mt-2">
           <select name="businessType" id="businessType" placeholer='Select Businesstype'  value={formData.businessType} onChange={(e)=>handleInputChange(e)} className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
@@ -459,8 +530,42 @@ const Customer = () => {
 </form>
 </div>
 
+
+
 <div className="p-1">
   <div className="rounded-lg shadow bg-white">
+  <div className='flex flex-row justify-cenetr items-ceenter mt-2 gap-3'>
+  <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+          <label for="marketName" className="block text-sm/6 font-medium text-gray-900">Select Market</label>
+          <div className="mt-2">
+            <select type="text" name="marketName" id="marketName" placeholer='Select Market'  value={marketFilter.marketName} onChange={(e)=>hadleFilterChange(e)} className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+            <option value="" onCLick={clearMarketName}>
+    All
+  </option>
+            {markets?.map((market, index) => (
+              <option key={index} value={market.marketName}>
+                {market.marketName}
+              </option>
+            ))}
+            </select>
+          </div>
+        </div>
+        <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+          <label for="customerName" className="block text-sm/6 font-medium text-gray-900">Select Customer</label>
+          <div className="mt-2">
+            <select type="text" name="customerName" id="customerName" placeholer='Select Customer'  value={marketFilter.customerName} onChange={(e)=>hadleFilterChange(e)} className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+            <option value="" onclick={customerFilter} >
+    All
+  </option>
+            {customers?.map((market, index) => (
+              <option key={index} value={market.name}>
+                {market.name}
+              </option>
+            ))}
+            </select>
+          </div>
+        </div>
+  </div>
     {/* Scrollable table wrapper */}
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
@@ -472,11 +577,8 @@ const Customer = () => {
             <th className="px-2 py-3 text-left text-xsm font-semibold">Phone</th>
             <th className="px-2 py-3 text-left text-xsm font-semibold">Image</th>
             <th className="px-2 py-3 text-left text-xsm font-semibold">Market</th>
-            <th className="px-2 py-3 text-left text-xsm font-semibold">Opponent Sales</th>
-            <th className="px-2 py-3 text-left text-xsm font-semibold">Due Amount</th>
-            <th className="px-2 py-3 text-left text-xsm font-semibold">Weekly Sale</th>
-            <th className="px-2 py-3 text-left text-xsm font-semibold">Potential Customer</th>
-            <th className="px-2 py-3 text-left text-xsm font-semibold">Business Type</th>
+            <th className="px-2 py-3 text-left text-xsm font-semibold">Open</th>
+           
             <th className="px-2 py-3 text-left text-xsm font-semibold">Edit</th>
             <th className="px-2 py-3 text-left text-xsm font-semibold">Delete</th>
           </tr>
@@ -488,10 +590,10 @@ const Customer = () => {
               <td className="px-2 py-4 text-xsm text-gray-900">{market.name}</td>
               <td className="px-2 py-4 text-xsm text-gray-900">{market.address}</td>
               <td className="px-2 py-4 text-xsm text-gray-900">{market.phoneNo}</td>
-              <td className="px-2 py-4 text-xsm text-gray-900"><img src={market.imageUrl} w-50 h-50/></td>
+              <td className="px-2 py-4 text-xsm text-gray-900 w-30 h-30"><img src={market.imageUrl} /></td>
 
               <td className="px-2 py-4 text-xsm text-gray-900">{market.market}</td>
-              <td className="px-2 py-4 text-xsm text-gray-900">
+              {/* <td className="px-2 py-4 text-xsm text-gray-900">
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200 bg-white">
                     <thead className="bg-indigo-600 text-white">
@@ -516,7 +618,15 @@ const Customer = () => {
               <td className="px-2 py-4 text-xsm text-gray-900">{market.dueAmount}</td>
               <td className="px-2 py-4 text-xsm text-gray-900">{market.weeklySale}</td>
               <td className="px-2 py-4 text-xsm text-gray-900">{market.potentialCustomer?"Yes":"No"}</td>
-              <td className="px-2 py-4 text-xsm text-gray-900">{market.businessType}</td>
+              <td className="px-2 py-4 text-xsm text-gray-900">{market.businessType}</td> */}
+               <td className="px-2 py-4 text-xsm text-gray-900">
+                <button
+                  className="bg-green-500 p-2 rounded-md text-white"
+                  onClick={() => handleOpen(market)}
+                >
+                  Open
+                </button>
+              </td>
               <td className="px-2 py-4 text-xsm text-gray-900">
                 <button
                   className="bg-green-500 p-2 rounded-md text-white"
@@ -528,7 +638,7 @@ const Customer = () => {
               <td className="px-6 py-4 text-xsm text-gray-900">
                 <button
                   className="bg-red-500 p-2 rounded-md text-white"
-                  onClick={() => handleDelete(market._id)}
+                  onClick={()=>handleDeleteOpen(market)}
                 >
                   Delete
                 </button>

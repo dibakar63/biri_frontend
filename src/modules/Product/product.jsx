@@ -3,12 +3,15 @@ import React,{use, useState,useEffect} from 'react';
 import toast from 'react-hot-toast';
 import EditProductModal from './editProduct';
 import Cookie from 'js-cookie'
+import DeleteProductModal from './deleteProductModal';
 
 const Product = () => {
   const token=Cookie.get('token');
   const [products,setProducts] = useState([]);
   const [selectedMarket, setSelectedMarket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+      const [deleteId,setDeleteId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     type: '',
@@ -55,6 +58,11 @@ const Product = () => {
     "Uttarakhand",
     "West Bengal"
   ];
+      const handleDeleteOpen=(market)=>{
+      setDeleteId(market._id)
+     setSelectedMarket(market);
+    setDeleteModalOpen(true);
+  }
   const fetchData=async()=>{
     try {
       const response=await axios.get('https://apibiri.eazydevz.in/api/getProduct');
@@ -139,6 +147,14 @@ const Product = () => {
         onSave={handleSave}
         market={selectedMarket}
       />
+            <DeleteProductModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onSave={()=>handleDelete(deleteId)}
+        market={selectedMarket}
+        id={deleteId}
+        setId={setDeleteId}
+      />
 
     <div className="border-b border-gray-900/10 pb-12">
      
@@ -221,7 +237,7 @@ const Product = () => {
                 <td className="px-6 py-4 text-sm text-gray-900">{market.code}</td>
                
                 <td className="px-6 py-4 text-md text-gray-900"><button className='bg-green-500 p-2 rounded-md text-white' onClick={()=>handleEdit(market)}>Edit</button></td>
-                <td className="px-6 py-4 text-md text-gray-900"><button className='bg-red-500 p-2 text-md rounded-md text-white' onClick={()=>handleDelete(market._id)}>Delete</button></td>
+                <td className="px-6 py-4 text-md text-gray-900"><button className='bg-red-500 p-2 text-md rounded-md text-white' onClick={()=>handleDeleteOpen(market)}>Delete</button></td>
               </tr>
             ))}
           </tbody>

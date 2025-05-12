@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaTrash } from 'react-icons/fa';
+import { IoMdClose } from "react-icons/io";
 
 const EditProductModal = ({ isOpen, onClose, onSave, market }) => {
     
@@ -84,10 +85,10 @@ const EditProductModal = ({ isOpen, onClose, onSave, market }) => {
         <h1 className='text-sm/6 w-100 p-3 text-center bg-indigo-600 rounded font-medium text-white'>Markets</h1>
         {formData.market.map((sale,index)=>(
           <div className='flex flex-row justify-between w-full p-2' key={index}>
-          <div className='sm:col-span-3 flex flex-row gap-2 p-4 bg-[#F2F1F1] w-fit-content'>
+          <div className='sm:col-span-3 flex flex-row gap-2 p-4 bg-[#F2F1F1] w-fit-content relative'>
          
           <input name='name' type="text" id="name" value={sale.name} onChange={(e)=>{handleSaleChange(index,e)}} className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
-          <button onClick={()=>handleDeleteSale(index)} className='bg-red-500 text-white p-2 rounded-md'><FaTrash/></button>
+          <button className='absolute top-2 right-4 text-red-500 hover:text-red-700  text-xl' onClick={()=>handleDeleteSale(index)}><IoMdClose/></button>
 
         </div>
       
