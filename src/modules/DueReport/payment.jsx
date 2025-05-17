@@ -59,6 +59,12 @@ const CustomerPaymentModal = ({
         paymentData()
         dueData()
         onClose();
+        setFormData({
+            name:'',
+            market:'',
+            paidAmount: 0,
+
+          });
         
     } catch (error) {
         if(error.response.status===404){
