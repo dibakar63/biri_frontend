@@ -17,6 +17,7 @@ import MarketInputReport from '../modules/Market/marketDailyInputReport';
 import Login from '../modules/auth/login';
 import Dashboard from '../modules/dashboard/dashboard';
 import Cookie from 'js-cookie';
+import DueReport from '../modules/DueReport/dueReport';
 
 const Layout = () => {
   const token = Cookie.get('token');
@@ -46,6 +47,7 @@ const Layout = () => {
               <Route path="/dailyMarketInput" element={<DailyMarketInput />} />
               <Route path="/dailyCustomerInputReport" element={<CustomerInputReport/>} />
               <Route path="/dailyMarketInputReport" element={<MarketInputReport/>} />
+              <Route path="/dueReport" element={<DueReport/>} />
             
               <Route path="/dashboard" element={<Dashboard/>} />
             </Routes>

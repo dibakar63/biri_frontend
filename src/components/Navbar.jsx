@@ -41,22 +41,23 @@ const handleLogout = () => {
           </svg>
         </button>
       </div>
-      <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+      <div className="flex items-center justify-center sm:items-stretch sm:justify-start sm:col-12">
         
         <div className="hidden sm:ml-8 sm:block">
-          <div className="flex space-x-4">
+          <div className="flex space-x-3">
           
             {/* <a href="#" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Dashboard</a> */}
             <Link to="/dashboard" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Dashboard</Link>
             <Link to="/dailySaleReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Daily Saleperson </Link>
             <Link to="/dailyCustomerInputReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Daily Customer Input</Link>
             <Link to="/dailyMarketInputReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Daily Market Input</Link>
+            <Link to="/dueReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Due Report</Link>
           </div>
         </div>
       </div>
-      <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-end">
+      <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-end sm:col-span-3">
         
-        <div className="hidden sm:ml-4 sm:block">
+        <div className="hidden sm:ml-2 sm:block">
         
           <div className="flex space-x-4">
           

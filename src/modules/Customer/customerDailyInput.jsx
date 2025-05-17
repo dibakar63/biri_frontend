@@ -16,6 +16,7 @@ const DailyCustomerInput = () => {
   const [marketName,setMarketName]=useState([]);
   const [formData, setFormData] = useState({
     name: "",
+    market:"",
 
     sale: [{ productCode: "", quantity: null, unit: "packet" }],
     due: null,
@@ -55,7 +56,7 @@ const DailyCustomerInput = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://apibiri.eazydevz.in/api/getCustomerByMarket?market=${marketName}`,
+        `https://apibiri.eazydevz.in/api/getCustomerByMarket?market=${formData.market}`,
       );
       setCustomers(response.data.customer);
     } catch (error) {
@@ -92,6 +93,7 @@ const DailyCustomerInput = () => {
       sale: formData.sale,
       paid: formData.paid,
       due: formData.due,
+      market:formData.market
     };
 
     try {
@@ -106,6 +108,7 @@ const DailyCustomerInput = () => {
         sale: [],
         paid: null,
         due: null,
+        market:""
       });
       //alert(response.data.message);
     } catch (error) {
@@ -149,7 +152,7 @@ const DailyCustomerInput = () => {
   }, []);
   useEffect(()=>{
     fetchData();
-  },[marketName])
+  },[formData.market])
 
   return (
     <div className="w-full h-full bg-[#DDDCDC] p-10 ">
@@ -242,13 +245,13 @@ const DailyCustomerInput = () => {
                <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
                 
                 <div className="mt-2" >
-                <label htmlFor="marketName" className="block text-sm font-medium text-gray-900">Market </label>
+                <label htmlFor="market" className="block text-sm font-medium text-gray-900">Market </label>
                   <select
-                    name="marketName"
+                    name="market"
                     
-                    id="marketName"
-                    value={marketName}
-                    onChange={(e) => setMarketName(e.target.value)}
+                    id="market"
+                    value={formData.market}
+                    onChange={(e) => handleInputChange(e)}
                     className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                   >
                     <option value="">Select Market</option>

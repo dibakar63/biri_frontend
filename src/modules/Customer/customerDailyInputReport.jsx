@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 //import EditMarketModal from './editDailySalePerson';
 import Cookie from 'js-cookie'
 import EditCustomerDailyInputModal from './editCustomerDailyInput';
+import DeleteCustomerDailyInputModal from './delteDailyCustomerInput';
 
 const CustomerInputReport =()=>{
   const token=Cookie.get('token');
@@ -11,6 +12,8 @@ const CustomerInputReport =()=>{
   const [selectedMarket, setSelectedMarket] = useState(null);
   const [customers,setCustomerName]=useState([]);
   const [products,setProducts] = useState([]);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteId,setDeleteId] = useState(null);  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const  [formData, setFormData] = useState({
     
@@ -76,10 +79,15 @@ return formattedDate;
     setSelectedMarket(market);
     setIsModalOpen(true);
   };
+  const handleDeleteModal=(id)=>{
+    setDeleteId(id);
+    setDeleteModalOpen(true);
+  }
   const handleDelete=async(id)=>{
     try {
       const response=await axios.delete(`https://apibiri.eazydevz.in/api/deleteCustomerDailyInput/${id}`);
       toast.success(response.data.message);
+      setDeleteId(null);
       filterData();
     } catch (error) {
       toast.error(error.response.data.message);
@@ -131,6 +139,14 @@ return formattedDate;
         productData={products}
         customerName={customers}
       />
+      <DeleteCustomerDailyInputModal
+      isOpen={deleteModalOpen}
+      onClose={() => setDeleteModalOpen(false)}
+      onSave={() => handleDelete(deleteId)}
+      id={deleteId}
+      setId={setDeleteId}
+
+      />
 
 
 <div className="p-6">
@@ -177,7 +193,7 @@ return formattedDate;
                 <td className="px-6 py-4 text-sm text-gray-900">{market.due}</td>
                 
                 <td className="px-6 py-4 text-md text-gray-900"><button className='bg-green-500 p-2 rounded-md text-white' onClick={()=>handleEdit(market)}>Edit</button></td>
-                <td className="px-6 py-4 text-md text-gray-900"><button className='bg-red-500 p-2 text-md rounded-md text-white' onClick={()=>handleDelete(market._id)}>Delete</button></td>
+                <td className="px-6 py-4 text-md text-gray-900"><button className='bg-red-500 p-2 text-md rounded-md text-white' onClick={()=>handleDeleteModal(market._id)}>Delete</button></td>
               </tr>
             ))}
           </tbody>
