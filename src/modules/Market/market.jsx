@@ -4,9 +4,11 @@ import toast from 'react-hot-toast';
 import EditMarketModal from './editMarket';
 import Cookie from 'js-cookie'
 import DeleteMarketModal from './deleteMarketModal';
+import { useSelector } from 'react-redux';
 
 const Market = () => {
   const token=Cookie.get('token');
+   const businessName = useSelector((state) => state.business.businessName);
   const [markets,setMarkets] = useState([]);
   const [selectedMarket, setSelectedMarket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,7 +19,7 @@ const Market = () => {
     marketAddress: '',
     marketCity: '',
     marketPincode: '',
-    marketState: 'West Bengal',
+    marketState: 'West Bengal',businessName:businessName
   });
 
   
@@ -62,7 +64,11 @@ const Market = () => {
   ];
   const fetchData=async()=>{
     try {
-      const response=await axios.get('https://apibiri.eazydevz.in/api/getMarket');
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getMarket?businessName=${businessName}`,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      });
       setMarkets(response.data.market);
      
     } catch (error) {
@@ -76,6 +82,7 @@ const Market = () => {
       marketCity:formData.marketCity,
       marketPincode:formData.marketPincode,
       marketState:formData.marketState,
+      businessName:businessName
 
     }
     
@@ -132,7 +139,7 @@ const Market = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [businessName]);
   
   
   return (

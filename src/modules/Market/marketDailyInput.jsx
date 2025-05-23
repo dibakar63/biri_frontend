@@ -4,9 +4,11 @@ import toast from "react-hot-toast";
 
 import Cookie from "js-cookie";
 import { FaMinus, FaPlus } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const DailyMarketInput = () => {
   const token = Cookie.get("token");
+   const businessName = useSelector((state) => state.business.businessName);
   const [customers, setCustomers] = useState([]);
   const [products, setProducts] = useState([]);
   const [count, setCount] = useState(1);
@@ -18,7 +20,7 @@ const DailyMarketInput = () => {
 
     sale: [{ productCode: "", quantity: null, unit: "packet" }],
     due: null,
-    paid: null,
+    paid: null,businessName:businessName
   });
 
   const handleInputChange = (e) => {
@@ -54,7 +56,7 @@ const DailyMarketInput = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://apibiri.eazydevz.in/api/getMarket"
+        `https://apibiri.eazydevz.in/api/getMarket?businessName=${businessName}`
       );
       setCustomers(response.data.market);
     } catch (error) {
@@ -64,7 +66,7 @@ const DailyMarketInput = () => {
   const fetchProductData = async () => {
     try {
       const response = await axios.get(
-        "https://apibiri.eazydevz.in/api/getProduct"
+        `https://apibiri.eazydevz.in/api/getProduct?businessName=${businessName}`
       );
       setProducts(response.data.product);
     } catch (error) {
@@ -78,6 +80,7 @@ const DailyMarketInput = () => {
       sale: formData.sale,
       paid: formData.paid,
       due: formData.due,
+      businessName:businessName
     };
 
     try {
@@ -131,7 +134,7 @@ const DailyMarketInput = () => {
     fetchData();
     fetchProductData()
    
-  }, []);
+  }, [businessName]);
 
   return (
     <div className="w-full h-full bg-[#DDDCDC] p-10 ">

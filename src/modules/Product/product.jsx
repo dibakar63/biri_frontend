@@ -4,9 +4,11 @@ import toast from 'react-hot-toast';
 import EditProductModal from './editProduct';
 import Cookie from 'js-cookie'
 import DeleteProductModal from './deleteProductModal';
+import { useSelector } from 'react-redux';
 
 const Product = () => {
   const token=Cookie.get('token');
+   const businessName = useSelector((state) => state.business.businessName);
   const [products,setProducts] = useState([]);
   const [selectedMarket, setSelectedMarket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,6 +18,7 @@ const Product = () => {
     name: '',
     type: '',
     code: '',
+    businessName:businessName,
     
   });
 
@@ -65,7 +68,7 @@ const Product = () => {
   }
   const fetchData=async()=>{
     try {
-      const response=await axios.get('https://apibiri.eazydevz.in/api/getProduct');
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getProduct?businessName=${businessName}`);
       setProducts(response.data.product);
      
     } catch (error) {
@@ -77,6 +80,7 @@ const Product = () => {
       name:formData.name,
       type:formData.type,
       code:formData.code,
+      businessName:businessName,
       
 
     }
@@ -127,7 +131,7 @@ const Product = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [businessName]);
   
   
   return (

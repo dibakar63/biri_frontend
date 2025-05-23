@@ -4,19 +4,22 @@ import toast from 'react-hot-toast';
 import { FaPlus } from 'react-icons/fa';
 import Cookie from 'js-cookie'
 import { IoMdClose } from "react-icons/io";
-
+import { useSelector } from 'react-redux';
 const DailySalePerson = () => {
   const token=Cookie.get('token');
   const [markets,setMarkets] = useState([]);
   const [salesMan,setSalesMan] = useState([]);
   const [selectedMarket, setSelectedMarket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+   const businessName = useSelector((state) => state.business.businessName);
+  
   const [formData, setFormData] = useState({
     market: [],
     salePersons: [],
     date: new Date().toISOString().split('T')[0],
     
     time: '',
+    businessName:businessName
     
   });
 
@@ -61,7 +64,7 @@ const DailySalePerson = () => {
   ];
   const fetchData=async()=>{
     try {
-      const response=await axios.get('https://apibiri.eazydevz.in/api/getMarket');
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getMarket?businessName=${businessName}`);
       setMarkets(response.data.market);
      
     } catch (error) {
@@ -70,7 +73,7 @@ const DailySalePerson = () => {
   }
   const fetchSalesPersonData=async()=>{
     try {
-      const response=await axios.get('https://apibiri.eazydevz.in/api/getSalePerson');
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getSalePerson?businessName=${businessName}`);
       setSalesMan(response.data.salePerson);
      
     } catch (error) {
@@ -83,6 +86,7 @@ const DailySalePerson = () => {
       salePersons:formData.salePersons,
       date:formData.date,
       time:formData.time,
+      businessName:businessName
     
 
     }

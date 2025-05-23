@@ -6,6 +6,8 @@ import Cookie from 'js-cookie'
 import { FaMinus, FaPlus,FaTrash } from 'react-icons/fa';
 import OpenCustomerModal from './customerModal';
 import DeleteCustomerModal from './deleteModal';
+import { useSelector } from 'react-redux';
+
 
 const Customer = () => {
   const token=Cookie.get('token');
@@ -30,12 +32,14 @@ const Customer = () => {
     weeklySale:"",
     potentialCustomer:false,
     businessType:"",
-    key:''
+    key:'',
+    businessName:''
   });
   const [marketFilter, setMarketFilter] = useState({
     marketName:'',
     customerName:'',
   }); 
+   const businessName = useSelector((state) => state.business.businessName);
 
 
   
@@ -193,7 +197,7 @@ const Customer = () => {
     const marketName=marketFilter.marketName;
     const customerName=marketFilter.customerName;
     try {
-      const response = await axios.get(`https://apibiri.eazydevz.in/api/getCustomerByMarket?market=${marketName}&name=${customerName}`);
+      const response = await axios.get(`https://apibiri.eazydevz.in/api/getCustomerByMarket?market=${marketName}&name=${customerName}&businessName=${businessName}`);
       const rooms = response.data.customer;
   
       // Map over rooms and fetch images dynamically
@@ -227,7 +231,7 @@ const Customer = () => {
   console.log(customers, 'customers');
   const fetchMarketData=async()=>{
     try {
-      const response=await axios.get('https://apibiri.eazydevz.in/api/getMarket');
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getMarket?businessName=${businessName}`);
       setMarkets(response.data.market);
      
     } catch (error) {
@@ -245,7 +249,8 @@ const Customer = () => {
       weeklySale:formData.weeklySale,
       potentialCustomer:formData.potentialCustomer,
       businessType:formData.businessType,
-      key:imageKey
+      key:imageKey,
+      businessName:businessName
 
     }
     
@@ -265,6 +270,7 @@ const Customer = () => {
         potentialCustomer:false,
         businessType:"",
         key:"",
+        businessName:businessName
               });
       //alert(response.data.message);
     } catch (error) {
@@ -317,7 +323,11 @@ const Customer = () => {
   }, []);
   useEffect(()=>{
     fetchData();
-  },[marketFilter.marketName,marketFilter.customerName])
+  },[marketFilter.marketName,marketFilter.customerName,businessName])
+  useEffect(()=>{
+    fetchData();
+    fetchMarketData();
+  },[businessName])
   
   
   return (

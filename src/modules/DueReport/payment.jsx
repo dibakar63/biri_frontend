@@ -3,6 +3,7 @@ import { FaPlus, FaTrash } from "react-icons/fa";
 import SalePerson from "../SalePerson/salePerson";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useSelector } from "react-redux";
 const CustomerPaymentModal = ({
   isOpen,
   onClose,
@@ -12,11 +13,12 @@ const CustomerPaymentModal = ({
   paymentData,dueData
 }) => {
   
-
+const businessName=useSelector((state)=>state.business.businessName)
   const [formData, setFormData] = useState({
     name:'',
     market:'',
     paidAmount: 0,
+    businessName:businessName,
     
   });
  
@@ -30,7 +32,7 @@ const CustomerPaymentModal = ({
         
        
     })
-  }, [market,customerName]);
+  }, [market,customerName,businessName]);
  
  
 
@@ -50,6 +52,7 @@ const CustomerPaymentModal = ({
         market: formData.market,
         name: formData.name,
         paidAmount: formData.paidAmount,
+        businessName:businessName,
 
       }
     

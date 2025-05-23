@@ -6,6 +6,7 @@ import Cookie from 'js-cookie'
 import CustomerPaymentModal from './payment';
 import DeletePaymentModal from './deletePaymentModal';
 import EditPaymentModal from './editPaymentModal';
+import { useSelector } from 'react-redux';
 
 
 const DueReport = () => {
@@ -22,6 +23,7 @@ const DueReport = () => {
   const [dueReport,setDueReport] = useState([]);
   const [customers,setCustomers] = useState([]);
  const [deleteId,setDeleteId] = useState(null);
+ const businessName=useSelector((state)=>state.business.businessName);
   const  [formData, setFormData] = useState({
     
     market: '',
@@ -72,7 +74,7 @@ return formattedDate;
 //   }
   const fetchMarketData=async()=>{
     try {
-      const response=await axios.get('https://apibiri.eazydevz.in/api/getMarket');
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getMarket?businessName=${businessName}`);
       setMarketName(response.data.market);
      
     } catch (error) {
@@ -81,7 +83,7 @@ return formattedDate;
   }
   const fetchCustomerData=async()=>{
     try {
-      const response=await axios.get(`https://apibiri.eazydevz.in/api/getCustomerByMarket?market=${formData.market}` );
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getCustomerByMarket?market=${formData.market}&businessName=${businessName}` );
       setCustomers(response.data.customer);
      
     } catch (error) {
@@ -96,7 +98,7 @@ return formattedDate;
   }
   const fetchPaymentData=async()=>{
     try {
-      const response=await axios.get(`https://apibiri.eazydevz.in/api/getPayment?market=${formData.market}&name=${formData.name}`);
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getPayment?market=${formData.market}&name=${formData.name}&businessName=${businessName}`);
       setPayment(response.data.payment);
 
     } catch (error) {
@@ -107,7 +109,7 @@ return formattedDate;
   const DueData=async()=>{
     
     try {
-      const response=await axios.get(`https://apibiri.eazydevz.in/api/dueReport?market=${formData.market}&name=${formData.name}`);
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/dueReport?market=${formData.market}&name=${formData.name}&businessName=${businessName}`);
       setDueReport(response.data.totalDueReport);
      
     } catch (error) {
@@ -166,19 +168,19 @@ return formattedDate;
     fetchPaymentData();
     DueData();
     
-  }, [formData.market,formData.name]);
+  }, [formData.market,formData.name,businessName]);
   useEffect(()=>{
     if(formData.market){
     fetchCustomerData();
     }
    
-  },[formData.market])
+  },[formData.market,businessName])
   useEffect(() => {
    
     DueData();
    fetchCustomerData();
    fetchMarketData();
-  }, []);
+  }, [businessName]);
   
   
   return (

@@ -1,16 +1,26 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect, use} from 'react';
 import Cookies  from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../utils/redux/authSlice';
 import { useNavigate,Link } from 'react-router-dom';
+import {getBusinessName,setBusinessName} from '../utils/redux/businessSlice';
 
 const Navbar=()=>{
   const [toggle,setToggle]=useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {  error, loading } = useSelector((state) => state.auth);
+  const {businessName,businessList}=useSelector((state)=>state.business);
   const token=Cookies.get('token');
-  console.log(token,'token');
+  console.log(businessName,'token');
+
+  useEffect(()=>{
+    dispatch(getBusinessName());
+  },[dispatch])
+   const handleChange = (e) => {
+        dispatch(setBusinessName(e.target.value));
+    };
+
   
 const handleLogout = () => {
   dispatch(logout());
@@ -52,6 +62,14 @@ const handleLogout = () => {
             <Link to="/dailyCustomerInputReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Daily Customer Input</Link>
             <Link to="/dailyMarketInputReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Daily Market Input</Link>
             <Link to="/dueReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Due Report</Link>
+            <select className='rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white' name='businessName' value={businessName} onChange={(e)=>handleChange(e)}>
+              <option value="">Select Business</option>
+              {businessList.map((business) => (
+                <option key={business._id} value={business.businessName}>
+                  {business.businessName}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </div>

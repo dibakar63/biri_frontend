@@ -7,9 +7,11 @@ import { FaPlus, FaTrash, } from 'react-icons/fa';
 import {  } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
 import DeleteSalePersonModal from './deleteSalePerson';
+import { useSelector } from 'react-redux';
 
 const SalePerson = () => {
   const token=Cookie.get('token');
+   const businessName = useSelector((state) => state.business.businessName);
   const [products,setProducts] = useState([]);
   const [markets,setMarkets] = useState([]);
   const [selectedMarket, setSelectedMarket] = useState(null);
@@ -20,7 +22,8 @@ const SalePerson = () => {
     name:"",
     phoneNo:"",
     address:"",
-    market:[]
+    market:[],
+    businessName:businessName,
     
   });
 
@@ -93,7 +96,7 @@ const SalePerson = () => {
   ];
   const fetchData=async()=>{
     try {
-      const response=await axios.get('https://apibiri.eazydevz.in/api/getSalePerson');
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getSalePerson?businessName=${businessName}`);
       setProducts(response.data.salePerson);
      
     } catch (error) {
@@ -102,7 +105,7 @@ const SalePerson = () => {
   }
   const fetchMarketData=async()=>{
     try {
-      const response=await axios.get('https://apibiri.eazydevz.in/api/getMarket');
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getMarket?businessName=${businessName}`);
       setMarkets(response.data.market);
      
     } catch (error) {
@@ -115,6 +118,7 @@ const SalePerson = () => {
       phoneNo:formData.phoneNo,
       address:formData.address,
       market:formData.market,
+      businessName:businessName,
       
 
     }
@@ -167,7 +171,7 @@ const SalePerson = () => {
   useEffect(() => {
     fetchData();
     fetchMarketData();
-  }, []);
+  }, [businessName]);
   
   
   return (

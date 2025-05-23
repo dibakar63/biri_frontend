@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 import Cookie from "js-cookie";
 import { FaMinus, FaPlus } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const DailyCustomerInput = () => {
   const token = Cookie.get("token");
@@ -14,6 +15,7 @@ const DailyCustomerInput = () => {
   const [selectedMarket, setSelectedMarket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [marketName,setMarketName]=useState([]);
+  const businessName = useSelector((state) => state.business.businessName);
   const [formData, setFormData] = useState({
     name: "",
     market:"",
@@ -21,6 +23,7 @@ const DailyCustomerInput = () => {
     sale: [{ productCode: "", quantity: null, unit: "packet" }],
     due: null,
     paid: null,
+    businessName: "",
   });
 
   const handleInputChange = (e) => {
@@ -56,7 +59,7 @@ const DailyCustomerInput = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://apibiri.eazydevz.in/api/getCustomerByMarket?market=${formData.market}`,
+        `https://apibiri.eazydevz.in/api/getCustomerByMarket?market=${formData.market}&businessName=${businessName}`,
       );
       setCustomers(response.data.customer);
     } catch (error) {
@@ -70,7 +73,7 @@ const DailyCustomerInput = () => {
   const fetchProductData = async () => {
     try {
       const response = await axios.get(
-        "https://apibiri.eazydevz.in/api/getProduct"
+        `https://apibiri.eazydevz.in/api/getProduct?businessName=${businessName}`,
       );
       setProducts(response.data.product);
     } catch (error) {
@@ -79,7 +82,7 @@ const DailyCustomerInput = () => {
   };
     const fetchMarketData=async()=>{
     try {
-      const response=await axios.get('https://apibiri.eazydevz.in/api/getMarket');
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getMarket?businessName=${businessName}`);
       setMarkets(response.data.market);
      
     } catch (error) {
@@ -93,7 +96,8 @@ const DailyCustomerInput = () => {
       sale: formData.sale,
       paid: formData.paid,
       due: formData.due,
-      market:formData.market
+      market:formData.market,
+      businessName: businessName,
     };
 
     try {
@@ -108,7 +112,8 @@ const DailyCustomerInput = () => {
         sale: [],
         paid: null,
         due: null,
-        market:""
+        market:"",
+        businessName: "",
       });
       //alert(response.data.message);
     } catch (error) {
@@ -149,7 +154,7 @@ const DailyCustomerInput = () => {
     fetchProductData()
     fetchMarketData();
    
-  }, []);
+  }, [businessName]);
   useEffect(()=>{
     fetchData();
   },[formData.market])

@@ -5,9 +5,11 @@ import toast from 'react-hot-toast';
 import Cookie from 'js-cookie'
 import EditDailyPersonModal from './editDailySalePerson';
 import DeleteDailySalePersonModel from './delteDailySalePerson';
+import { useSelector } from 'react-redux';
 
 const DailySalePersonReport = () => {
   const token=Cookie.get('token');
+const businessName = useSelector((state) => state.business.businessName);
   const [markets,setMarkets] = useState([]);
   const [marketName,setMarketName] = useState([]);
   const [salePersons,setSalePersons] = useState([]);
@@ -50,7 +52,7 @@ return formattedDate;
   }
   const fetchData=async()=>{
     try {
-      const response=await axios.get('https://apibiri.eazydevz.in/api/getMarket');
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getMarket?businessName=${businessName}`);
       setMarketName(response.data.market);
      
     } catch (error) {
@@ -59,7 +61,7 @@ return formattedDate;
   }
   const fetchSalesPersonData=async()=>{
     try {
-      const response=await axios.get('https://apibiri.eazydevz.in/api/getSalePerson');
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getSalePerson?businessName=${businessName}`);
       setSalePersons(response.data.salePerson);
      
     } catch (error) {
@@ -71,7 +73,7 @@ return formattedDate;
     const startDate = formData.startDate;
     const endDate = formData.endDate;
     try {
-      const response=await axios.get(`https://apibiri.eazydevz.in/api/getDailySalePersonByDate?startDate=${startDate}&endDate=${endDate}`);
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getDailySalePersonByDate?startDate=${startDate}&endDate=${endDate}&businessName=${businessName}`);
       setMarkets(response.data.dailySalePerson);
      
     } catch (error) {
@@ -120,12 +122,12 @@ return formattedDate;
 
   useEffect(() => {
     filterData();
-  }, [formData.startDate,formData.endDate]);
+  }, [formData.startDate,formData.endDate,businessName]);
   useEffect(() => {
     fetchData();
     filterData();
     fetchSalesPersonData();
-  }, []);
+  }, [businessName]);
   
   
   return (

@@ -2,8 +2,10 @@ import React, { use, useState,useEffect } from 'react';
 import axios from 'axios';
 import toast  from 'react-hot-toast'; 
 import Chart from 'react-apexcharts'
+import { useSelector } from 'react-redux';
 
 const Dashboard = () => {
+  const  businessName = useSelector((state) => state.business.businessName);
   const [market,setMarket]=useState([]);
   const [marketReport,setMarketReport]=useState([]);
   const [formData,setFormData]=useState({
@@ -23,7 +25,7 @@ const Dashboard = () => {
 
     const fetchMarketReportData=async()=>{
         try {
-          const response=await axios.get(`https://apibiri.eazydevz.in/api/getMarketInputReport?market=${formData.market}&startDate=${formData.startDate}&endDate=${formData.endDate}`);
+          const response=await axios.get(`https://apibiri.eazydevz.in/api/getMarketInputReport?market=${formData.market}&startDate=${formData.startDate}&endDate=${formData.endDate}&businessName=${businessName}`);
           setMarketReport(response.data.marketReport);
           
         } catch (error) {
@@ -34,7 +36,7 @@ const Dashboard = () => {
     }
     const fetchMarketData=async()=>{
       try {
-        const response=await axios.get('https://apibiri.eazydevz.in/api/getMarket');
+        const response=await axios.get(`https://apibiri.eazydevz.in/api/getMarket?businessName=${businessName}`);
         setMarket(response.data.market);
       } catch (error) {
         toast.error(error.message);
@@ -42,11 +44,11 @@ const Dashboard = () => {
     }
     useEffect(()=>{
       fetchMarketReportData();
-    },[formData.market,formData.startDate,formData.endDate])
+    },[formData.market,formData.startDate,formData.endDate,businessName])
     useEffect(()=>{
       fetchMarketData();
       fetchMarketReportData();
-    },[])
+    },[businessName])
     //  const options={
     //   series: marketReport?.productSales?.map(item=>item.quantity),
     //   labels: marketReport?.productSales?.map(item=>item.productCode),

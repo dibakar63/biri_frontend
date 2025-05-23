@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import Cookie from 'js-cookie'
 import EditCustomerDailyInputModal from './editCustomerDailyInput';
 import DeleteCustomerDailyInputModal from './delteDailyCustomerInput';
+import { useSelector } from 'react-redux';
 
 const CustomerInputReport =()=>{
   const token=Cookie.get('token');
@@ -15,6 +16,7 @@ const CustomerInputReport =()=>{
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteId,setDeleteId] = useState(null);  
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const businessName = useSelector((state) => state.business.businessName);
   const  [formData, setFormData] = useState({
     
     startDate: '',
@@ -34,7 +36,7 @@ const CustomerInputReport =()=>{
   };
   const fetchData=async()=>{
     try {
-      const response=await axios.get('https://apibiri.eazydevz.in/api/getCustomer');
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getCustomer?businessName=${businessName}`);
       setCustomerName(response.data.customer);
      
     } catch (error) {
@@ -43,7 +45,7 @@ const CustomerInputReport =()=>{
   }
   const fetchProductData=async()=>{
     try {
-      const response=await axios.get('https://apibiri.eazydevz.in/api/getProduct');
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getProduct?businessName=${businessName}`);
       setProducts(response.data.product);
      
     } catch (error) {
@@ -67,7 +69,7 @@ return formattedDate;
     const startDate = formData.startDate;
     const endDate = formData.endDate;
     try {
-      const response=await axios.get(`https://apibiri.eazydevz.in/api/getDailyInputByDate?startDate=${startDate}&endDate=${endDate}`);
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getDailyInputByDate?startDate=${startDate}&endDate=${endDate}&businessName=${businessName}`);
       setMarkets(response.data.customerDailyInput);
      
     } catch (error) {
@@ -119,7 +121,7 @@ return formattedDate;
     fetchData();
     fetchProductData();
     filterData();
-  }, []);
+  }, [businessName]);
   
   
   return (
