@@ -62,6 +62,7 @@ const handleLogout = () => {
             <Link to="/dailyCustomerInputReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Daily Customer Input</Link>
             <Link to="/dailyMarketInputReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Daily Market Input</Link>
             <Link to="/dueReport" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Due Report</Link>
+            <Link to="/feedback" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Feedback</Link>
             <select className='rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white' name='businessName' value={businessName} onChange={(e)=>handleChange(e)}>
               <option value="">Select Business</option>
               {businessList.map((business) => (
