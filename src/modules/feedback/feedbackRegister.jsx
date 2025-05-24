@@ -120,7 +120,7 @@ const FeedbackRegister = () => {
         <div className="sm:col-span-6 bg-[#F2F1F1] rounded-md shadow-lg p-10">
           <label for="feedback" className="block text-sm/6 font-medium text-gray-900">Feedback</label>
           <div className="mt-2">
-          <input name="feedback" id="type" value={formData.feedback} onChange={(e)=>{handleInputChange(e)}}  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
+          <textarea name="feedback" id="type" value={formData.feedback} onChange={(e)=>{handleInputChange(e)}} rows={3}  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
           </div>
         </div>
         {/* <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
