@@ -10,8 +10,10 @@ import { useSelector } from 'react-redux';
 const CustomerInputReport =()=>{
   const token=Cookie.get('token');
   const [markets,setMarkets] = useState([]);
+  const [marketName,setMarketName]=useState([]);
+  const [customers,setCustomers]=useState([]);
   const [selectedMarket, setSelectedMarket] = useState(null);
-  const [customers,setCustomerName]=useState([]);
+  const [customerName,setCustomerName]=useState([]);
   const [products,setProducts] = useState([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteId,setDeleteId] = useState(null);  
@@ -21,6 +23,9 @@ const CustomerInputReport =()=>{
     
     startDate: '',
     endDate: '',
+    market:"",
+    customer:"",
+
 
   });
 
@@ -37,7 +42,7 @@ const CustomerInputReport =()=>{
   const fetchData=async()=>{
     try {
       const response=await axios.get(`https://apibiri.eazydevz.in/api/getCustomer?businessName=${businessName}`);
-      setCustomerName(response.data.customer);
+      setCustomers(response.data.customer);
      
     } catch (error) {
       console.log(error);
@@ -48,6 +53,24 @@ const CustomerInputReport =()=>{
       const response=await axios.get(`https://apibiri.eazydevz.in/api/getProduct?businessName=${businessName}`);
       setProducts(response.data.product);
      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const fetchMarketData=async()=>{
+    try {
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getMarket?businessName=${businessName}`);
+      setMarketName(response.data.market);
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const fetchCustomerData=async()=>{
+    try {
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getCustomerByMarket?businessName=${businessName}&market=${formData.market}`);
+      setCustomerName(response.data.customer);
+
     } catch (error) {
       console.log(error);
     }
@@ -69,7 +92,7 @@ return formattedDate;
     const startDate = formData.startDate;
     const endDate = formData.endDate;
     try {
-      const response=await axios.get(`https://apibiri.eazydevz.in/api/getDailyInputByDate?startDate=${startDate}&endDate=${endDate}&businessName=${businessName}`);
+      const response=await axios.get(`https://apibiri.eazydevz.in/api/getDailyInputByDate?startDate=${startDate}&endDate=${endDate}&businessName=${businessName}&market=${formData.market}&customer=${formData.customer}`);
       setMarkets(response.data.customerDailyInput);
      
     } catch (error) {
@@ -116,12 +139,20 @@ return formattedDate;
     
     filterData();
     
-  }, [formData.startDate,formData.endDate]);
+  }, [formData.startDate,formData.endDate,formData.market,formData.customer]);
   useEffect(() => {
     fetchData();
     fetchProductData();
     filterData();
+    fetchMarketData();
+    fetchCustomerData();
   }, [businessName]);
+  useEffect(()=>{
+   
+      fetchCustomerData();
+    
+  },[formData.market])
+  
   
   
   return (
@@ -130,6 +161,23 @@ return formattedDate;
     <div className='w-full h-full bg-white flex flex-row justify-center gap-3 items-center p-10 rounded-lg'>
     <input   type="date" name="startDate" id="startDate"  value={formData.startDate} onChange={(e)=>handleInputChange(e)} className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
     <input   type="date" name="endDate" id="endDate"  value={formData.endDate} onChange={(e)=>handleInputChange(e)} className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
+    <select    name="market" id="market"  value={formData.market} onChange={(e)=>handleInputChange(e)} className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+      <option value="">Select Market</option>
+      {marketName.map((market) => (
+        <option key={market._id} value={market.marketName}>
+          {market.marketName}
+        </option>
+      ))}
+    </select>
+     <select    name="customer" id="customer"  value={formData.customer} onChange={(e)=>handleInputChange(e)} className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+      <option value="">Select Customer</option>
+      {customerName.map((market) => (
+        <option key={market._id} value={market.name}>
+          {market.name}
+        </option>
+      ))}
+    </select>
+   
    {/* <button onClick={filterData} className='bg-indigo-600 text-white px-4 py-2 rounded-md'>Filter</button> */}
     </div>
   
