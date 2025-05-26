@@ -91,8 +91,9 @@ const Dashboard = () => {
     }
      const arr3=[];
     const arr4=[];
-    const seriesMap1=customerReport?.productSales?.forEach(item=>arr3.push(item.quantity))
-    const labelsMap1=customerReport?.productSales?.forEach(item=>arr4.push(item.productCode))
+    const seriesMap1 = customerReport?.productSales?.forEach(item => arr3.push(item.quantity));
+const labelsMap1 = customerReport?.productSales?.forEach(item => arr4.push(item.productCode));
+
     //console.log(arr1,arr2);
    
     const options1={
@@ -200,7 +201,7 @@ const Dashboard = () => {
         </div>
 
          <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-2">
-            <Chart options={options} labels={options.labels} series={options.series} type="donut" width="500" height={500} />
+          <Chart options={{ labels: options.labels }} series={options.series} type="donut" width="500" />
         </div>
         </div>
         <div className='mt-6 flex flex-row justify-center items-cneter gap-3'>
@@ -262,7 +263,7 @@ const Dashboard = () => {
         </table>
         </div>
            <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-2">
-            <Chart options={options1} labels={options.labels} series={options.series} type="donut" width="500" height={500} />
+          <Chart options={{ labels: options1.labels }} series={options1.series} type="donut" width="500" />
         </div>
 
           </div>
