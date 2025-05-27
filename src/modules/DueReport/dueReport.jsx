@@ -244,7 +244,7 @@ return formattedDate;
       setCustomerData={setEditCustomer}
 
       />
-      <div className='flex flex-row justify-between items-center gap-3   p-4'>
+      <div className='flex flex-row justify-between items-start gap-3   p-4'>
         <table className="min-w-1/3 divide-y divide-gray-200 bg-white">
           <thead className="bg-indigo-600 text-white">
             <tr>

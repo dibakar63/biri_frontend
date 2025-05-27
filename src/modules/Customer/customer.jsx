@@ -306,7 +306,7 @@ const Customer = () => {
 
   const handleSave = async(updatedMarket) => {
     try {
-      const response = await axios.put(`https://apibiri.eazydevz.in/api/updateCustomer/${updatedMarket._id}`, {data:updatedMarket});
+      const response = await axios.put(`https://apibiri.eazydevz.in/api/updateCustomerById/${updatedMarket._id}`, {data:updatedMarket});
       toast.success(response.data.message);
       fetchData();
       

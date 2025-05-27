@@ -76,6 +76,14 @@ const Sidebar = () => {
          
           <span>Daily Market Input</span>
           </Link>
+           <Link
+          to="/map"
+          className="flex items-center space-x-2 p-2  hover:bg-gray-400 transition "
+          style={{ backgroundColor: isActive("/map") ? "white" : "transparent" ,color:isActive("/map")?"black":"white",border:isActive("/map")?"2px solid bg-gray-400":"none"}}
+        >
+         
+          <span>Market Map</span>
+          </Link>
 
        
       </nav>

@@ -139,8 +139,8 @@ const EditCustomerDailyInputModal = ({
                   >
                   <option value="">Select a product</option>
                   {productData?.map((product)=>(
-                    <option key={product.code} value={product.code}>
-                      {product.code}
+                    <option key={product.name} value={product.name}>
+                      {product.name}
                     </option>
                   ))}</select>
                 </div>

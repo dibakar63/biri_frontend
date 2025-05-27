@@ -57,7 +57,7 @@ const businessName=useSelector((state)=>state.business.businessName)
       }
     
     try {
-        const response=await axios.post(`https://apibiri.eazydevz.in/api/customerPyament`,{data:updatedData});
+        const response=await axios.post(`https://apibiri.eazydevz.in/api/customerPyament?businessName=${businessName}`,{data:updatedData});
         toast.success(response.data.message);
         paymentData()
         dueData()

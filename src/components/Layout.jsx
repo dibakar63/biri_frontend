@@ -20,6 +20,7 @@ import Cookie from 'js-cookie';
 import DueReport from '../modules/DueReport/dueReport';
 import FeedbackReport from '../modules/feedback/feedback';
 import FeedbackRegister from '../modules/feedback/feedbackRegister';
+import CustomerMap from '../modules/map/map';
 
 const Layout = () => {
   const token = Cookie.get('token');
@@ -53,6 +54,7 @@ const Layout = () => {
               <Route path="/feedback" element={<FeedbackReport/>} />
             
               <Route path="/dashboard" element={<Dashboard/>} />
+              <Route path="/map" element={<CustomerMap/>} />
             </Routes>
             </>):(
               <>
