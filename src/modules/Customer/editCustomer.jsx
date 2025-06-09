@@ -1,8 +1,13 @@
 import React, { useState, useEffect, use } from 'react';
-import { FaTrash } from 'react-icons/fa';
+import { FaPlus, FaTrash } from 'react-icons/fa';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
   const [markets, setMarkets] = useState([]);
+   const [imageKey, setImageKey] = useState('');
+     const [selectedFile,setSelectedFile] = useState(null);
+     const [uploading, setUploading] = useState(false);
     const indianStates = [
         "Andhra Pradesh",
         "Arunachal Pradesh",
@@ -42,7 +47,8 @@ const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
         dueAmount:0,
         weeklySale:"",
         potentialCustomer:false,
-        businessType:""
+        businessType:"",
+        key:""
   });
   const fetchData=async()=>{
     try {
@@ -63,6 +69,16 @@ const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
   useEffect(() => {
     fetchData();
   }, []);
+    const handleCount = () => {
+    const newSaleArray = [
+      ...formData.saleArray,
+      { name: "", quantity: null, unit: "packet" },
+    ];
+    setFormData({
+      ...formData,
+      saleArray: newSaleArray,
+    });
+  };
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -79,6 +95,65 @@ const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
     const updatedMarket = [...formData.saleArray];
     updatedMarket.splice(index, 1); // remove the selected item
     setFormData((prev) => ({ ...prev, saleArray: updatedMarket }));
+  };
+  const handlePost = async (base64Image) => {
+    try {
+      setUploading(true);
+  
+      // Convert base64 to Blob
+      const base64ToBlob = (base64) => {
+        const byteString = atob(base64.split(',')[1]);
+        const mimeString = base64.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], { type: mimeString });
+      };
+  
+      const imageBlob = base64ToBlob(base64Image);
+      const formData = new FormData();
+      formData.append('image', imageBlob);
+  
+      const response = await axios.post(
+        "https://apibiri.eazydevz.in/images",
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+  
+      const data = response.data;
+  
+      setFormData((prev) => ({
+        ...prev,
+        key: data.key,
+      }));
+      setImageKey(data.key);
+  
+      toast.success("Image uploaded successfully");
+      console.log(data, 'Upload response');
+    } catch (err) {
+      console.error("Upload failed:", err);
+      toast.error("Image upload failed. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+  
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64Image = reader.result;
+      handlePost(base64Image);
+    };
+    reader.readAsDataURL(file);
   };
   
 
@@ -131,6 +206,13 @@ const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
         </div>
         <div className="flex flex-col bg-[#F2F1F1] shadow-md  mt-2 w-full justify-evenly p-4 gap-4 items-center ">
         <h1 className='text-center'>Opponent Sales</h1>
+          <button
+                                       type="button"
+                                       className="mt-4 flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                       onClick={handleCount}
+                                     >
+                                       <FaPlus />
+                                     </button>
         {formData.saleArray.map((sale,index)=>(
           <div className='flex flex-row justify-between w-full p-2' key={index}>
           <div className='sm:col-span-3 p-4 bg-[#F2F1F1] w-[47%]'>
@@ -166,18 +248,7 @@ const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
           <input name='weeklySale' type="number" id="weeklySale" value={formData.weeklySale} onChange={handleChange}  className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" />
 
         </div>
-        <div className='sm:col-span-2 p-4 bg-[#F2F1F1] w-[47%]'>
-          <label htmlFor="businessType" className="block text-sm font-medium text-gray-700">Business Type</label>
-          <select name='businessType' type="text" id="businessType" value={formData.businessType} onChange={handleChange}  className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" >
-          <option value="" disabled selected hidden>Select BusinessType</option>
-          
-          <option value="Retail">Retail</option>
-          <option value="Wholesale">Wholesale</option>
-         
-
-          </select>
-
-        </div>
+        
 
         </div>
         <div className="flex flex-row  mt-2 w-full justify-evenly p-4 gap-4 items-center ">
@@ -198,6 +269,25 @@ const EditCustomerModal = ({ isOpen, onClose, onSave, market,marketData }) => {
           </select>
 
         </div> */}
+         <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+          <label for="key" className="block text-sm/6 font-medium text-gray-900">Image Upload</label>
+          <div className="mt-2">
+            <input type="file" name="key" id="key"   onChange={(e)=>handleFileChange(e)} className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
+           
+          </div>
+        </div>
+        <div className='sm:col-span-3 p-4 bg-[#F2F1F1] w-[47%]'>
+          <label htmlFor="businessType" className="block text-sm font-medium text-gray-700">Business Type</label>
+          <select name='businessType' type="text" id="businessType" value={formData.businessType} onChange={handleChange}  className="mt-1 block w-full rounded-md border-gray-300 bg-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2" >
+          <option value="" disabled selected hidden>Select BusinessType</option>
+          
+          <option value="Retail">Retail</option>
+          <option value="Wholesale">Wholesale</option>
+         
+
+          </select>
+
+        </div>
       
 
         </div>
