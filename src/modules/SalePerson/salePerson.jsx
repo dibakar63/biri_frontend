@@ -23,6 +23,7 @@ const SalePerson = () => {
     phoneNo:"",
     address:"",
     market:[],
+    password:"",
     businessName:businessName,
     
   });
@@ -119,6 +120,7 @@ const SalePerson = () => {
       address:formData.address,
       market:formData.market,
       businessName:businessName,
+      password:formData.password,
       
 
     }
@@ -132,7 +134,8 @@ const SalePerson = () => {
        name:'',
         phoneNo:'',
         address:'',
-        market:[]
+        market:[],
+        password:"",
       });
       //alert(response.data.message);
     } catch (error) {
@@ -204,17 +207,23 @@ const SalePerson = () => {
      
 
       <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-        <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+        <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-10">
           <label for="name" className="block text-sm/6 font-medium text-gray-900">Name</label>
           <div className="mt-2">
             <input type="text" name="name" id="name" value={formData.name} onChange={(e)=>{handleInputChange(e)}} autocomplete="given-name" className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
           </div>
         </div>
 
-        <div className="sm:col-span-3 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+        <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-10">
           <label for="phoneNo" className="block text-sm/6 font-medium text-gray-900">Phone</label>
           <div className="mt-2">
           <input name="phoneNo" id="phoneNo" value={formData.phoneNo} onChange={(e)=>{handleInputChange(e)}}  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
+          </div>
+        </div>
+         <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-10">
+          <label for="password" className="block text-sm/6 font-medium text-gray-900">Password</label>
+          <div className="mt-2">
+            <input type="text" name="password" id="password" value={formData.password} onChange={(e)=>{handleInputChange(e)}}  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
           </div>
         </div>
         <div className="sm:col-span-2 bg-[#F2F1F1] rounded-md shadow-lg p-10">
@@ -316,6 +325,7 @@ const SalePerson = () => {
               <th className="px-6 py-3 text-left text-sm font-semibold">Phone</th>
               <th className="px-6 py-3 text-left text-sm font-semibold">Address</th>
               <th className="px-6 py-3 text-left text-sm font-semibold">Market</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Password</th>
               
               <th className="px-6 py-3 text-left text-sm font-semibold">Edit</th>
               <th className="px-6 py-3 text-left text-sm font-semibold">Delete</th>
@@ -329,6 +339,7 @@ const SalePerson = () => {
                 <td className="px-6 py-4 text-sm text-gray-900">{market.phoneNo}</td>
                 <td className="px-6 py-4 text-sm text-gray-900">{market.address}</td>
                 <td className="px-6 py-4 text-sm text-gray-900">{market.market.map((markets)=>(markets.name+" , "))}</td>
+                <td className="px-6 py-4 text-sm text-gray-900">{market.password}</td>
                
                 <td className="px-6 py-4 text-md text-gray-900"><button className='bg-green-500 p-2 rounded-md text-white' onClick={()=>handleEdit(market)}>Edit</button></td>
                 <td className="px-6 py-4 text-md text-gray-900"><button className='bg-red-500 p-2 text-md rounded-md text-white' onClick={()=>handleDeleteOpen(market)}>Delete</button></td>

@@ -8,7 +8,8 @@ const EditProductModal = ({ isOpen, onClose, onSave, market }) => {
     name:"",
     phoneNo:"",
     address:"",
-    market:[]
+    market:[],
+    password:""
   });
 
   useEffect(() => {
@@ -66,6 +67,17 @@ const EditProductModal = ({ isOpen, onClose, onSave, market }) => {
             name="phoneNo"
             placeholder="Phone No"
             value={formData.phoneNo}
+            onChange={(e)=>handleChange(e)}
+            className="w-full border px-3 py-2 rounded"
+          />
+          </div>
+          <div className='flex flex-row gap-2 justify-between'>
+        <label for="password" className="text-sm/6 w-100 p-3 text-center bg-indigo-600 rounded font-medium text-white">Password</label>
+        <input
+            type="text"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
             onChange={(e)=>handleChange(e)}
             className="w-full border px-3 py-2 rounded"
           />

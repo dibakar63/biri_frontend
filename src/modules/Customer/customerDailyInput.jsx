@@ -208,8 +208,8 @@ const DailyCustomerInput = () => {
                       >
                         <option value="">Select Product</option>
                         {products.map((product) => (
-                          <option key={product._id} value={product.code}>
-                            {product.code}
+                          <option key={product._id} value={product.name}>
+                            {product.name}
                           </option>
                         ))}
                       </select>
