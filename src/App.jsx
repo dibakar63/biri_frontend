@@ -41,7 +41,7 @@ function App() {
               
 
               {/* Redirect any other route to /login if no token */}
-              <Route path="*" element={<Navigate to="/login" />} />
+              <Route path="*" element={<Navigate to="/login" />} / >
             </>
           )}
         </Routes>
